@@ -1,0 +1,9 @@
+{
+  "city": "Turku",
+  "source": "sample",
+  "days": [
+    { "date": "2026-10-18", "minTemp": 2.1, "maxWind": 9.4, "rainMm": 1.2 },
+    { "date": "2026-10-19", "minTemp": -1.8, "maxWind": 6.2, "rainMm": 0 },
+    { "date": "2026-10-20", "minTemp": -0.6, "maxWind": 16.3, "rainMm": 11.4 }
+  ]
+}

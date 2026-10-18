@@ -104,11 +104,23 @@ npm run build
 npm start          # serves the app and the API on port 3001
 ```
 
+## Sustainability, privacy and accessibility
+
+The full assessment, including the legal check, is in [docs/SUSTAINABILITY.md](docs/SUSTAINABILITY.md). In short:
+
+- A visit transfers about 10 kB compressed. The median web page in 2024 was 2.3 MB on mobile ([HTTP Archive](https://almanac.httparchive.org/en/2024/page-weight)). There is no tracking, no fonts, no images and no AI.
+- The server caches each city's forecast for 30 minutes, so repeat visits don't call FMI again.
+- Privacy by design (GDPR Art. 5 and 25): no accounts, cookies or storage. Only the city name leaves the browser.
+- Accessibility: built for WCAG 2.1 AA, the level required by the European Accessibility Act and Finland's Act on the Provision of Digital Services. An automated axe-core check found 0 violations on all screens in light and dark mode. Colours are Signal violet (RAL 4008, `#844C82`) on mist gray (`#E6E7EA`), and every text pair meets the 4.5:1 contrast ratio.
+- Every fact on a card links to its Finnish source.
+
 ## Limitations
 
 - The rules are simplified examples written during the hackathon. They are not If's underwriting rules or insurance terms.
 - Cover depends on the customer's own policy. MovePilot tells the user what to check and where; it does not decide what is covered.
-- The weather card uses the forecast for the city centre, not the exact address.
+- The weather card uses the forecast for the city centre, not the exact address, and the forecast reaches only two to three days ahead.
+- The app is in English only. Finnish and Swedish versions are the first planned improvement.
+- The effect on damage and claims has not been measured yet.
 
 ## Team
 
