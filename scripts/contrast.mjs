@@ -22,6 +22,8 @@ const PAIRS = [
   ["focus-on-violet", "violet", 3], ["focus-on-violet", "violet-deep", 3],
   ["ink", "mist-2", 4.5], ["muted", "mist-2", 4.5], ["violet-text", "mist-2", 4.5],
   ["ink", "mist-3", 4.5], ["muted", "mist-3", 4.5], ["on-violet", "violet", 4.5],
+  // The dark-mode switch on the utility bar: its track border and the "on" fill.
+  ["control", "mist-3", 3], ["violet", "mist-3", 3],
 ];
 
 const lum = (hex) => {
