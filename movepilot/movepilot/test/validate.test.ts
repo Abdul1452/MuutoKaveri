@@ -20,6 +20,7 @@ test("accepts valid answers, including Nordic letters and hyphens", () => {
 
 test("reports the first problem", () => {
   assert.equal(inputProblem({ ...ok, moveDate: "" }), "date");
+  assert.equal(inputProblem({ ...ok, moveDate: "2026-02-31" }), "date");
   assert.equal(inputProblem({ ...ok, city: "<script>" }), "city");
   assert.equal(inputProblem({ ...ok, buildingYear: 1700 }), "year");
   assert.equal(inputProblem({ ...ok, buildingYear: 1985.5 }), "year");

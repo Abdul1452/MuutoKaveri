@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "concurrently -n api,web -c blue,green \"tsx watch server/index.ts\" \"vite\"",
     "build": "tsc --noEmit && vite build",
-    "start": "NODE_ENV=production tsx server/index.ts",
+    "start": "tsx server/index.ts --production",
     "save-fixture": "tsx server/save-fixture.ts",
     "typecheck": "tsc --noEmit",
     "test": "tsx --test \"test/*.test.ts\"",

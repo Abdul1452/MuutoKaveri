@@ -134,10 +134,10 @@ npm run check
 
 The full assessment, including the legal check, is in [docs/SUSTAINABILITY.md](docs/SUSTAINABILITY.md). In short:
 
-- A visit transfers about 10 kB compressed. The median web page in 2024 was 2.3 MB on mobile ([HTTP Archive](https://almanac.httparchive.org/en/2024/page-weight)). There is no tracking, no fonts, no images and no AI.
+- The first visit transfers about 24 kB compressed, plus a forecast response under 1 kB. The Finnish or Swedish texts add about 7 kB, and only for people who choose that language. The median web page in 2024 was 2.3 MB on mobile ([HTTP Archive](https://almanac.httparchive.org/en/2024/page-weight)). There is no tracking, no web fonts, no images other than a small SVG icon, and no AI. `npm run budget` fails the build if the first visit goes over 50 kB.
 - The server caches each city's forecast for 30 minutes, so repeat visits don't call FMI again.
-- Privacy by design (GDPR Art. 5 and 25): no accounts, cookies or storage. Only the city name leaves the browser.
-- Accessibility: built for WCAG 2.1 AA, the level required by the European Accessibility Act and Finland's Act on the Provision of Digital Services. An automated axe-core check found 0 violations on all screens in light and dark mode. Colours are Signal violet (RAL 4008, `#844C82`) on mist gray (`#E6E7EA`), and every text pair meets the 4.5:1 contrast ratio.
+- Privacy by design (GDPR Art. 5 and 25): no accounts or cookies. Only the city name leaves the browser, and the server does not log it. Nothing is stored on the device unless the user turns on **Save on this device**; turning it off deletes the saved plan and the offline cache, and the service worker stops writing at once.
+- Accessibility: built for WCAG 2.1 AA, the level required by the European Accessibility Act and Finland's Act on the Provision of Digital Services. Lighthouse (axe-core) scores 100 for accessibility on the form and plan screens of the production build. Colours are Signal violet (`#7A35FF`) on mist gray (`#F0F2F5`), in light and dark mode; `npm run contrast` checks that every text pair meets 4.5:1 and every control border, progress bar and focus ring meets 3:1. States stay visible in Windows High Contrast mode.
 - Every fact on a card links to its Finnish source.
 
 ## Limitations
@@ -146,6 +146,7 @@ The full assessment, including the legal check, is in [docs/SUSTAINABILITY.md](d
 - Cover depends on the customer's own policy. MovePilot tells the user what to check and where; it does not decide what is covered.
 - The weather card uses the forecast for the city centre, not the exact address, and the forecast reaches only two to three days ahead.
 - The Finnish and Swedish texts were translated and reviewed with AI help and still need a check by a native speaker before production.
+- The server has no per-IP rate limit on `/api/forecast` yet; its cache is bounded and repeat requests share one FMI call, but a production host should add a rate limit.
 - The effect on damage and claims has not been measured yet.
 
 ## Team

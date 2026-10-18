@@ -147,6 +147,15 @@ export function renderForm(
     age: f.errorAge,
   };
 
+  function clearInvalid(): void {
+    form.querySelectorAll<HTMLInputElement>("[aria-invalid]").forEach((el) => {
+      el.removeAttribute("aria-invalid");
+      if (el.dataset.describedby) el.setAttribute("aria-describedby", el.dataset.describedby);
+      else el.removeAttribute("aria-describedby");
+      delete el.dataset.describedby;
+    });
+  }
+
   form.addEventListener("submit", (e) => {
     e.preventDefault();
     const data = new FormData(form);
@@ -165,15 +174,22 @@ export function renderForm(
       knowsCover: (data.get("knowsCover") as MoveInput["knowsCover"]) ?? "unsure",
     };
 
-    form.querySelectorAll("[aria-invalid]").forEach((el) => el.removeAttribute("aria-invalid"));
+    clearInvalid();
     const problem = inputProblem(input);
     if (problem) {
       // An age problem points at the dishwasher field when the washing machine age is fine.
-      const field =
+      const name =
         problem === "age" && inputProblem({ ...input, dishwasherAge: null }) === null
           ? "dishwasherAge"
           : PROBLEM_FIELD[problem];
-      form.querySelector(`[name="${field}"]`)?.setAttribute("aria-invalid", "true");
+      const field = form.querySelector<HTMLInputElement>(`[name="${name}"]`);
+      if (field) {
+        field.setAttribute("aria-invalid", "true");
+        // Link the message to the field, so it is read out when the user tabs back to it.
+        field.dataset.describedby = field.getAttribute("aria-describedby") ?? "";
+        field.setAttribute("aria-describedby", `${field.dataset.describedby} form-error`.trim());
+        field.addEventListener("input", clearInvalid, { once: true });
+      }
       errorEl.textContent = messages[problem];
       errorEl.hidden = false;
       errorEl.focus();

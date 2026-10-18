@@ -19,6 +19,7 @@ const PAIRS = [
   ["green", "green-soft", 4.5], ["blue", "blue-soft", 4.5], ["blue", "surface", 4.5],
   ["amber", "amber-soft", 4.5], ["slate", "slate-soft", 4.5],
   ["control", "surface", 3], ["violet", "surface", 3], ["fill", "track", 3], ["focus", "mist", 3], ["focus", "surface", 3],
+  ["focus-on-violet", "violet", 3], ["focus-on-violet", "violet-deep", 3],
 ];
 
 const lum = (hex) => {

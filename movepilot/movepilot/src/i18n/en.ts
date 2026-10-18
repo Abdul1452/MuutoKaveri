@@ -21,6 +21,7 @@ export const en = {
     label: "Progress",
     of: (n: number, total: number) => `Step ${n} of ${total}`,
     names: ["Your move", "Your plan", "Ready"],
+    done: "completed",
   },
 
   form: {
@@ -109,6 +110,7 @@ export const en = {
       n === 0 ? "All important items done" : n === 1 ? "1 important item open" : `${n} important items open`,
     filterLabel: "Show",
     filterAll: "All",
+    filterShown: (n: number) => (n === 1 ? "Showing 1 task" : `Showing ${n} tasks`),
     calendar: "Add to calendar",
     print: "Print",
     phaseCount: (done: number, total: number) => `${done} of ${total} done`,
@@ -184,7 +186,7 @@ export const en = {
     summary: "Privacy, accessibility and sources",
     privacyTitle: "Privacy",
     privacy:
-      "MovePilot has no accounts, cookies, analytics or tracking. By default your answers stay in this browser tab and disappear when you close it. Only the city name is sent to our server, which uses it to fetch the weather forecast and does not store it.",
+      "MovePilot has no accounts, cookies, analytics or tracking. By default your answers stay in this browser tab and disappear when you close it. Only the city name is sent to our server. The server passes it to the Finnish Meteorological Institute to get the forecast and keeps that city's forecast in memory for 30 minutes. The name is not logged or linked to you.",
     privacySaved:
       "If you turn on “Save on this device”, your answers, ticks and notes are kept in this browser's local storage and the app is cached for offline use. Nothing is sent anywhere. Turning it off deletes all of it.",
     accessibilityTitle: "Accessibility",
@@ -196,7 +198,8 @@ export const en = {
       { topic: "Leak claims in Finland, 2021", label: "Finanssiala via STT", href: "https://www.sttinfo.fi/tiedote/69941993/vuotovahingot-kaantyivat-nousuun-putkiremontin-suunnittelu-kannattaa-aloittaa-jo-ennen-kuin-putket-vanhenevat-kasiin" },
       { topic: "Leak causes and building age", label: "Pohjola, Verkkouutiset 2021", href: "https://www.verkkouutiset.fi/a/vuotovahingoista-voi-tulla-omakotiasujalle-huikea-lasku/" },
       { topic: "Appliance age and average leak cost", label: "Pohjola, Verkkouutiset 2024", href: "https://www.verkkouutiset.fi/a/yleinen-kodinkone-voi-aiheuttaa-jopa-100000-euron-vahingot/" },
-      { topic: "Heating energy and room temperature", label: "Motiva", href: "https://www.motiva.fi/" },
+      { topic: "Heating energy and room temperature", label: "Motiva", href: "https://www.motiva.fi/tietopankki/kodin-energiatehokas-sahkolammitys/" },
+      { topic: "Smoke alarms", label: "Ministry of the Interior decree 300/2025, Finlex", href: "https://www.finlex.fi/fi/lainsaadanto/2025/300" },
       { topic: "Weather forecast", label: "Finnish Meteorological Institute open data, CC BY 4.0", href: "https://en.ilmatieteenlaitos.fi/open-data" },
     ],
     disclaimer:
@@ -210,6 +213,7 @@ export const en = {
     applianceAge: "Pohjola appliance data (Verkkouutiset 2024)",
     fmi: "Finnish Meteorological Institute, CC BY 4.0",
     motiva: "Motiva",
+    smokeAlarm: "Decree on smoke alarms 300/2025 (Finlex)",
   },
 
   cards: {
@@ -232,7 +236,7 @@ export const en = {
     officialNotice: {
       title: "File your official move notice",
       body: "One notice updates the Population Register and Posti. You can file it up to a month before the move, and at the latest one week after it.",
-      link: "muuttoilmoitus.fi",
+      link: "Move notice at Posti",
     },
     insurerNotice: {
       title: "Tell your insurer the new address and move date",
@@ -270,9 +274,9 @@ export const en = {
     meters: {
       title: "Read the meters and check for hidden leaks",
       houseBody:
-        "Write down the electricity and water meter readings for your first bills. Then close every tap: if the water meter still moves, there is a hidden leak.",
+        "Write down the electricity and water meter readings for your first bills. Then close every tap and watch the water meter for a few minutes: if it keeps moving, there may be a hidden leak.",
       apartmentBody:
-        "Write down the electricity meter reading for your contract. If the apartment has its own water meter, close every tap and check that it stands still; if it moves, there is a hidden leak.",
+        "Write down the electricity meter reading for your contract. If the apartment has its own water meter, close every tap and watch it for a few minutes: if it keeps moving, there may be a hidden leak.",
     },
     reconnect: {
       title: "Reconnect appliances and watch the first run",
@@ -284,7 +288,7 @@ export const en = {
     },
     smokeAlarm: {
       title: "Test the smoke alarms",
-      body: "Every floor of a home needs a working smoke alarm. Test it in the first week and write down when the battery was changed.",
+      body: "A home needs at least one smoke alarm for every started 60 m² on each floor. Test them in the first week. In a housing company, the company maintains the alarms, so report a faulty alarm or flat battery to it straight away.",
     },
     pipeHistory: {
       houseTitle: "Find out when the pipes were last renewed",
@@ -300,7 +304,7 @@ export const en = {
     },
     heating: {
       title: "Set room temperatures and keep the vents open",
-      body: "About 21 °C is enough for living rooms and 18 °C for bedrooms. Each degree lower saves about 5% of heating energy. Don't close the ventilation vents: that causes damp and mould.",
+      body: "About 21 °C is enough for living rooms and 18–20 °C for bedrooms. Each degree lower saves about 5% of heating energy. Don't close the ventilation vents: that causes damp and mould.",
     },
     waste: {
       title: "Learn the waste sorting at the new address",

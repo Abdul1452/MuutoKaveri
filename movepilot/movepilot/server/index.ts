@@ -30,8 +30,41 @@ app.use((_req, res, next) => {
 
 // Forecasts change a few times a day, so one FMI call per city per 30 minutes is enough.
 // This cuts repeat calls to FMI (Motiva: efficient use of caches; Ympäristö OK Web 3).
+// The cache is bounded, failures are cached briefly, and requests for the same city share one FMI call,
+// so a flood of made-up place names can't grow memory without limit or hammer FMI.
 const CACHE_MS = 30 * 60 * 1000;
-const cache = new Map<string, { at: number; forecast: Forecast }>();
+const FAILURE_CACHE_MS = 5 * 60 * 1000;
+const CACHE_MAX = 500;
+const cache = new Map<string, { expires: number; forecast: Forecast }>();
+const inFlight = new Map<string, Promise<Forecast>>();
+
+let fixture: Promise<Forecast> | null = null;
+const savedForecast = () => (fixture ??= readFile(FIXTURE, "utf8").then((text) => JSON.parse(text) as Forecast));
+
+function remember(key: string, forecast: Forecast, ttl: number): void {
+  if (cache.size >= CACHE_MAX) {
+    const now = Date.now();
+    for (const [k, v] of cache) if (v.expires <= now) cache.delete(k);
+    // Still full: drop the oldest entry (Map keeps insertion order).
+    if (cache.size >= CACHE_MAX) cache.delete(cache.keys().next().value!);
+  }
+  cache.set(key, { expires: Date.now() + ttl, forecast });
+}
+
+async function forecastFor(city: string, key: string): Promise<Forecast> {
+  try {
+    const forecast = await fetchForecast(city);
+    remember(key, forecast, CACHE_MS);
+    return forecast;
+  } catch (err) {
+    // FMI down or unknown place: fall back to the saved forecast so the plan still works.
+    // The place name is not logged: it can say where a user is moving.
+    console.warn(`FMI request failed: ${(err as Error).message}. Using saved forecast.`);
+    const forecast = { ...(await savedForecast()), city };
+    remember(key, forecast, FAILURE_CACHE_MS);
+    return forecast;
+  }
+}
 
 app.get("/api/forecast", async (req, res) => {
   const city = String(req.query.city ?? "").trim();
@@ -42,25 +75,26 @@ app.get("/api/forecast", async (req, res) => {
 
   const key = city.toLowerCase();
   const hit = cache.get(key);
-  if (hit && Date.now() - hit.at < CACHE_MS) {
+  if (hit && hit.expires > Date.now()) {
     res.json(hit.forecast);
     return;
   }
 
+  let pending = inFlight.get(key);
+  if (!pending) {
+    pending = forecastFor(city, key).finally(() => inFlight.delete(key));
+    inFlight.set(key, pending);
+  }
   try {
-    const forecast = await fetchForecast(city);
-    cache.set(key, { at: Date.now(), forecast });
-    res.json(forecast);
-  } catch (err) {
-    // FMI down or unknown place: fall back to the saved forecast so the demo keeps working.
-    console.warn(`FMI failed for "${city}": ${(err as Error).message}. Using saved forecast.`);
-    const saved = JSON.parse(await readFile(FIXTURE, "utf8")) as Forecast;
-    res.json({ ...saved, city });
+    res.json(await pending);
+  } catch {
+    res.status(503).json({ error: "Forecast unavailable." });
   }
 });
 
 // In production, serve the built client from the same server.
-if (process.env.NODE_ENV === "production") {
+// `--production` works on every OS; NODE_ENV=production is kept for hosting services that set it.
+if (process.env.NODE_ENV === "production" || process.argv.includes("--production")) {
   const dist = path.join(here, "..", "dist");
   // Hashed build assets never change, so browsers can keep them for a year; index.html is always revalidated.
   app.use("/assets", express.static(path.join(dist, "assets"), { immutable: true, maxAge: "365d" }));

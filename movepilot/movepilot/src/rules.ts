@@ -5,7 +5,8 @@ import { addDays, daysBetween, formatDate, formatNumber, monthOf } from "./util"
 // Links used by the cards.
 export const IF_MOVE_NOTICE =
   "https://www.if.fi/henkiloasiakkaat/vakuutukset/kotivakuutus/muuttaminen/muuttoilmoitus";
-const OFFICIAL_MOVE_NOTICE = "https://www.muuttoilmoitus.fi/";
+// muuttoilmoitus.fi now redirects here; one notice reaches both DVV and Posti.
+const OFFICIAL_MOVE_NOTICE = "https://www.posti.fi/muuttaminen/muuttoilmoitus";
 const RECYCLING_FINDER = "https://www.kierratys.info/";
 
 // Finnish research behind the card texts. Shown on each card so users and judges can check them.
@@ -15,7 +16,8 @@ export const SOURCE_LINKS = {
   leakCauses: "https://www.verkkouutiset.fi/a/vuotovahingoista-voi-tulla-omakotiasujalle-huikea-lasku/",
   applianceAge: "https://www.verkkouutiset.fi/a/yleinen-kodinkone-voi-aiheuttaa-jopa-100000-euron-vahingot/",
   fmi: "https://en.ilmatieteenlaitos.fi/open-data",
-  motiva: "https://www.motiva.fi/",
+  motiva: "https://www.motiva.fi/tietopankki/kodin-energiatehokas-sahkolammitys/",
+  smokeAlarm: "https://www.finlex.fi/fi/lainsaadanto/2025/300",
 } as const;
 
 // Thresholds for weather cards.
@@ -213,6 +215,7 @@ export function buildPlan(
     priority: "normal",
     tag: "safety",
     due: due(7),
+    source: src("smokeAlarm"),
     title: c.smokeAlarm.title,
     body: c.smokeAlarm.body,
   });

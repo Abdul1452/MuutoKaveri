@@ -16,6 +16,7 @@ export const sv: Messages = {
     label: "Framsteg",
     of: (n: number, total: number) => `Steg ${n} av ${total}`,
     names: ["Din flytt", "Din plan", "Klart"],
+    done: "klart",
   },
 
   form: {
@@ -108,6 +109,7 @@ export const sv: Messages = {
           : `${n} viktiga uppgifter kvar`,
     filterLabel: "Visa",
     filterAll: "Alla",
+    filterShown: (n: number) => (n === 1 ? "Visar 1 uppgift" : `Visar ${n} uppgifter`),
     calendar: "Lägg till i kalendern",
     print: "Skriv ut",
     phaseCount: (done: number, total: number) => `Klart: ${done} av ${total}`,
@@ -185,7 +187,7 @@ export const sv: Messages = {
     summary: "Dataskydd, tillgänglighet och källor",
     privacyTitle: "Dataskydd",
     privacy:
-      "MovePilot har inga konton, kakor, analysverktyg eller spårning. Som standard stannar dina svar i den här webbläsarfliken och försvinner när du stänger den. Bara ortens namn skickas till vår server. Servern använder det för att hämta väderprognosen och sparar det inte.",
+      "MovePilot har inga konton, kakor, analysverktyg eller spårning. Som standard stannar dina svar i den här webbläsarfliken och försvinner när du stänger den. Bara ortens namn skickas till vår server. Servern skickar det vidare till Meteorologiska institutet för att hämta väderprognosen och håller ortens prognos i minnet i 30 minuter. Namnet loggas inte och kopplas inte till dig.",
     privacySaved:
       "Om du slår på ”Spara på den här enheten” sparas dina svar, markeringar och anteckningar i webbläsarens lokala lagring, och appen sparas i cacheminnet så att den fungerar utan internetförbindelse. Inget skickas någonstans. När du stänger av funktionen raderas allt.",
     accessibilityTitle: "Tillgänglighet",
@@ -197,7 +199,8 @@ export const sv: Messages = {
       { topic: "Läckageskador i Finland 2021", label: "Finanssiala via STT", href: "https://www.sttinfo.fi/tiedote/69941993/vuotovahingot-kaantyivat-nousuun-putkiremontin-suunnittelu-kannattaa-aloittaa-jo-ennen-kuin-putket-vanhenevat-kasiin" },
       { topic: "Orsaker till läckage och byggnadens ålder", label: "Pohjola, Verkkouutiset 2021", href: "https://www.verkkouutiset.fi/a/vuotovahingoista-voi-tulla-omakotiasujalle-huikea-lasku/" },
       { topic: "Hushållsmaskinernas ålder och genomsnittlig kostnad för en läckageskada", label: "Pohjola, Verkkouutiset 2024", href: "https://www.verkkouutiset.fi/a/yleinen-kodinkone-voi-aiheuttaa-jopa-100000-euron-vahingot/" },
-      { topic: "Uppvärmningsenergi och rumstemperatur", label: "Motiva", href: "https://www.motiva.fi/" },
+      { topic: "Uppvärmningsenergi och rumstemperatur", label: "Motiva", href: "https://www.motiva.fi/tietopankki/kodin-energiatehokas-sahkolammitys/" },
+      { topic: "Brandvarnare", label: "Inrikesministeriets förordning 300/2025, Finlex", href: "https://www.finlex.fi/fi/lainsaadanto/2025/300" },
       { topic: "Väderprognos", label: "Meteorologiska institutets öppna data, CC BY 4.0", href: "https://en.ilmatieteenlaitos.fi/open-data" },
     ],
     disclaimer:
@@ -211,6 +214,7 @@ export const sv: Messages = {
     applianceAge: "Data om hushållsmaskiner från Pohjola (Verkkouutiset 2024)",
     fmi: "Meteorologiska institutet, CC BY 4.0",
     motiva: "Motiva",
+    smokeAlarm: "Förordning om brandvarnare 300/2025 (Finlex)",
   },
 
   cards: {
@@ -233,7 +237,7 @@ export const sv: Messages = {
     officialNotice: {
       title: "Gör din officiella flyttanmälan",
       body: "Med en enda anmälan uppdateras uppgifterna i befolkningsdatasystemet och hos Posti. Du kan göra anmälan tidigast en månad före flytten och senast en vecka efter den.",
-      link: "muuttoilmoitus.fi",
+      link: "Flyttanmälan hos Posti",
     },
     insurerNotice: {
       title: "Meddela ditt försäkringsbolag den nya adressen och flyttdagen",
@@ -271,9 +275,9 @@ export const sv: Messages = {
     meters: {
       title: "Läs av mätarna och kontrollera om det finns dolda läckor",
       houseBody:
-        "Skriv ner elmätarens och vattenmätarens ställning för dina första räkningar. Stäng sedan alla kranar. Om vattenmätaren fortfarande rör sig finns det en dold läcka.",
+        "Skriv ner elmätarens och vattenmätarens ställning för dina första räkningar. Stäng sedan alla kranar och håll ögonen på vattenmätaren i några minuter. Om den fortfarande rör sig kan det finnas en dold läcka.",
       apartmentBody:
-        "Skriv ner elmätarens ställning för ditt elavtal. Om lägenheten har en egen vattenmätare, stäng alla kranar och kontrollera att mätaren står still. Om den rör sig finns det en dold läcka.",
+        "Skriv ner elmätarens ställning för ditt elavtal. Om lägenheten har en egen vattenmätare, stäng alla kranar och håll ögonen på mätaren i några minuter. Om den fortfarande rör sig kan det finnas en dold läcka.",
     },
     reconnect: {
       title: "Koppla in maskinerna igen och håll koll på den första körningen",
@@ -285,7 +289,7 @@ export const sv: Messages = {
     },
     smokeAlarm: {
       title: "Testa brandvarnarna",
-      body: "Varje våning i ett hem behöver en fungerande brandvarnare. Testa dem under den första veckan och skriv ner när batterierna byttes.",
+      body: "En bostad ska ha minst en brandvarnare för varje påbörjad 60 kvadratmeter på varje våning. Testa dem under den första veckan. I ett husbolag sköter bolaget brandvarnarna, så anmäl en trasig brandvarnare eller ett urladdat batteri till husbolaget genast.",
     },
     pipeHistory: {
       houseTitle: "Ta reda på när rören senast förnyades",
@@ -301,7 +305,7 @@ export const sv: Messages = {
     },
     heating: {
       title: "Ställ in rumstemperaturen och håll luftventilerna öppna",
-      body: "Cirka 21 °C räcker i vardagsrum och 18 °C i sovrum. Varje grad lägre sparar cirka 5 % av uppvärmningsenergin. Stäng inte luftventilerna, eftersom det leder till fukt och mögel.",
+      body: "Cirka 21 °C räcker i vardagsrum och 18–20 °C i sovrum. Varje grad lägre sparar cirka 5 % av uppvärmningsenergin. Stäng inte luftventilerna, eftersom det leder till fukt och mögel.",
     },
     waste: {
       title: "Lär dig avfallssorteringen på den nya adressen",

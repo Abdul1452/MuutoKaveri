@@ -23,6 +23,7 @@ export const fi: Messages = {
     label: "Eteneminen",
     of: (n: number, total: number) => `Vaihe ${n}/${total}`,
     names: ["Muuttosi", "Suunnitelmasi", "Valmis"],
+    done: "valmis",
   },
 
   form: {
@@ -117,6 +118,7 @@ export const fi: Messages = {
           : `${n} tärkeää tehtävää tekemättä`,
     filterLabel: "Näytä",
     filterAll: "Kaikki",
+    filterShown: (n: number) => (n === 1 ? "Näytetään 1 tehtävä" : `Näytetään ${n} tehtävää`),
     calendar: "Lisää kalenteriin",
     print: "Tulosta",
     phaseCount: (done: number, total: number) => `Tehty ${done}/${total}`,
@@ -194,7 +196,7 @@ export const fi: Messages = {
     summary: "Tietosuoja, saavutettavuus ja lähteet",
     privacyTitle: "Tietosuoja",
     privacy:
-      "MovePilotissa ei ole käyttäjätilejä, evästeitä, analytiikkaa eikä seurantaa. Oletuksena vastauksesi pysyvät tällä selaimen välilehdellä ja katoavat, kun suljet sen. Palvelimellemme lähetetään vain kunnan nimi. Palvelin käyttää nimeä sääennusteen hakemiseen eikä tallenna sitä.",
+      "MovePilotissa ei ole käyttäjätilejä, evästeitä, analytiikkaa eikä seurantaa. Oletuksena vastauksesi pysyvät tällä selaimen välilehdellä ja katoavat, kun suljet sen. Palvelimellemme lähetetään vain kunnan nimi. Palvelin välittää sen Ilmatieteen laitokselle sääennusteen hakemista varten ja pitää kunnan ennustetta muistissa 30 minuuttia. Nimeä ei kirjata lokiin eikä yhdistetä sinuun.",
     privacySaved:
       "Jos otat käyttöön asetuksen ”Tallenna tähän laitteeseen”, vastauksesi, merkintäsi ja muistiinpanosi säilytetään selaimen paikallisessa tallennustilassa, ja sovellus tallennetaan välimuistiin, jotta se toimii ilman verkkoyhteyttä. Mitään ei lähetetä minnekään. Kun poistat asetuksen käytöstä, kaikki nämä tiedot poistetaan.",
     accessibilityTitle: "Saavutettavuus",
@@ -206,7 +208,8 @@ export const fi: Messages = {
       { topic: "Vuotovahingot Suomessa 2021", label: "Finanssiala, STT", href: "https://www.sttinfo.fi/tiedote/69941993/vuotovahingot-kaantyivat-nousuun-putkiremontin-suunnittelu-kannattaa-aloittaa-jo-ennen-kuin-putket-vanhenevat-kasiin" },
       { topic: "Vuotojen syyt ja rakennuksen ikä", label: "Pohjola, Verkkouutiset 2021", href: "https://www.verkkouutiset.fi/a/vuotovahingoista-voi-tulla-omakotiasujalle-huikea-lasku/" },
       { topic: "Kodinkoneiden ikä ja vuotovahinkojen keskimääräiset kustannukset", label: "Pohjola, Verkkouutiset 2024", href: "https://www.verkkouutiset.fi/a/yleinen-kodinkone-voi-aiheuttaa-jopa-100000-euron-vahingot/" },
-      { topic: "Lämmitysenergia ja huonelämpötila", label: "Motiva", href: "https://www.motiva.fi/" },
+      { topic: "Lämmitysenergia ja huonelämpötila", label: "Motiva", href: "https://www.motiva.fi/tietopankki/kodin-energiatehokas-sahkolammitys/" },
+      { topic: "Palovaroittimet", label: "Sisäministeriön asetus 300/2025, Finlex", href: "https://www.finlex.fi/fi/lainsaadanto/2025/300" },
       { topic: "Sääennuste", label: "Ilmatieteen laitoksen avoin data, CC BY 4.0", href: "https://en.ilmatieteenlaitos.fi/open-data" },
     ],
     disclaimer:
@@ -220,6 +223,7 @@ export const fi: Messages = {
     applianceAge: "Pohjolan kodinkonetiedot (Verkkouutiset 2024)",
     fmi: "Ilmatieteen laitos, CC BY 4.0",
     motiva: "Motiva",
+    smokeAlarm: "Asetus palovaroittimista 300/2025 (Finlex)",
   },
 
   cards: {
@@ -242,7 +246,7 @@ export const fi: Messages = {
     officialNotice: {
       title: "Tee virallinen muuttoilmoitus",
       body: "Yhdellä ilmoituksella tiedot päivittyvät väestötietojärjestelmään ja Postille. Voit tehdä ilmoituksen aikaisintaan kuukautta ennen muuttoa ja viimeistään viikon kuluttua muutosta.",
-      link: "muuttoilmoitus.fi",
+      link: "Muuttoilmoitus Postissa",
     },
     insurerNotice: {
       title: "Kerro vakuutusyhtiölle uusi osoite ja muuttopäivä",
@@ -280,9 +284,9 @@ export const fi: Messages = {
     meters: {
       title: "Lue mittarit ja tarkista, onko piileviä vuotoja",
       houseBody:
-        "Kirjoita sähkö- ja vesimittarin lukemat muistiin ensimmäisiä laskuja varten. Sulje sitten kaikki hanat. Jos vesimittari pyörii yhä, jossain on piilevä vuoto.",
+        "Kirjoita sähkö- ja vesimittarin lukemat muistiin ensimmäisiä laskuja varten. Sulje sitten kaikki hanat ja seuraa vesimittaria muutaman minuutin ajan. Jos se pyörii yhä, jossain voi olla piilevä vuoto.",
       apartmentBody:
-        "Kirjoita sähkömittarin lukema muistiin sähkösopimusta varten. Jos asunnossa on oma vesimittari, sulje kaikki hanat ja tarkista, että mittari pysyy paikallaan. Jos se pyörii, jossain on piilevä vuoto.",
+        "Kirjoita sähkömittarin lukema muistiin sähkösopimusta varten. Jos asunnossa on oma vesimittari, sulje kaikki hanat ja seuraa mittaria muutaman minuutin ajan. Jos se pyörii yhä, jossain voi olla piilevä vuoto.",
     },
     reconnect: {
       title: "Kytke kodinkoneet takaisin ja seuraa ensimmäistä käyttökertaa",
@@ -294,7 +298,7 @@ export const fi: Messages = {
     },
     smokeAlarm: {
       title: "Testaa palovaroittimet",
-      body: "Kodin jokaisessa kerroksessa pitää olla toimiva palovaroitin. Testaa palovaroittimet ensimmäisellä viikolla ja kirjoita muistiin, milloin paristot on vaihdettu.",
+      body: "Asunnossa pitää olla vähintään yksi palovaroitin jokaisen kerroksen alkavaa 60 neliömetriä kohti. Testaa palovaroittimet ensimmäisellä viikolla. Taloyhtiössä palovaroittimet huoltaa taloyhtiö, joten ilmoita viallisesta varoittimesta tai loppuneesta paristosta sille heti.",
     },
     pipeHistory: {
       houseTitle: "Selvitä, milloin putket on viimeksi uusittu",
@@ -310,7 +314,7 @@ export const fi: Messages = {
     },
     heating: {
       title: "Säädä huonelämpötilat ja pidä ilmanvaihtoventtiilit auki",
-      body: "Olohuoneissa noin 21 °C riittää, makuuhuoneissa 18 °C. Jokainen aste vähemmän säästää noin 5 % lämmitysenergiaa. Älä sulje ilmanvaihtoventtiilejä, koska se aiheuttaa kosteutta ja hometta.",
+      body: "Olohuoneissa noin 21 °C riittää, makuuhuoneissa 18–20 °C. Jokainen aste vähemmän säästää noin 5 % lämmitysenergiaa. Älä sulje ilmanvaihtoventtiilejä, koska se aiheuttaa kosteutta ja hometta.",
     },
     waste: {
       title: "Selvitä jätteiden lajittelu uudessa osoitteessa",

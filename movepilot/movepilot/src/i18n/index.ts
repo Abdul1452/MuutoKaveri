@@ -31,14 +31,21 @@ export function isLang(value: unknown): value is Lang {
   return value === "en" || value === "fi" || value === "sv";
 }
 
-export async function setLang(next: Lang): Promise<void> {
-  messages = await loaders[next]();
+let request = 0;
+
+/** Switches language. Returns false when a later call took over while this one was loading. */
+export async function setLang(next: Lang): Promise<boolean> {
+  const mine = ++request;
+  const loaded = await loaders[next]();
+  if (mine !== request) return false;
+  messages = loaded;
   lang = next;
   document.documentElement.lang = next;
   document.title = messages.htmlTitle;
   document.querySelector('meta[name="description"]')?.setAttribute("content", messages.metaDescription);
   const skip = document.querySelector(".skip-link");
   if (skip) skip.textContent = messages.shell.skip;
+  return true;
 }
 
 /** First of the browser's preferred languages that we support, else English. */

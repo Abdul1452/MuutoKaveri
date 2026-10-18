@@ -10,7 +10,7 @@ import { emptyNotes, enableOffline, forget, loadSaved, save } from "./storage";
 import { todayIso } from "./util";
 import type { Card, Forecast, HomeNotes, Lang, MoveInput } from "./types";
 
-type Screen = "form" | "plan" | "summary";
+type Screen = "form" | "loading" | "plan" | "summary";
 
 const state = {
   screen: "form" as Screen,
@@ -22,6 +22,9 @@ const state = {
   filter: "all" as Filter,
   remember: false,
 };
+
+// Each forecast request gets a number; a slower, older response is ignored.
+let forecastRequest = 0;
 
 const root = document.querySelector<HTMLElement>("#app")!;
 const header = document.querySelector<HTMLElement>("#top")!;
@@ -44,6 +47,10 @@ function go(screen: Screen): void {
 }
 
 function render(): void {
+  if (state.screen === "loading" && state.input) {
+    renderLoading(root, state.input.city);
+    return;
+  }
   if (state.screen === "form" || !state.input) {
     renderForm(root, state.input, submit);
     return;
@@ -65,6 +72,7 @@ function render(): void {
         onFilter: setFilter,
         onRemember: setRemember,
         onCalendar: exportCalendar,
+        onPrint: printPlan,
         onBack: () => go("form"),
         onNext: () => go("summary"),
       },
@@ -92,14 +100,21 @@ function persist(): void {
   save({ input: state.input, done: [...state.done], notes: state.notes, lang: currentLang() });
 }
 
-async function submit(input: MoveInput): Promise<void> {
+/** Fetches the forecast for the current answers and shows the plan, unless a newer request took over. */
+async function loadPlan(input: MoveInput): Promise<void> {
+  const request = ++forecastRequest;
   state.input = input;
-  renderLoading(root, input.city);
-  root.querySelector<HTMLElement>("h1")?.focus();
-  state.forecast = await getForecast(input.city);
+  go("loading");
+  const forecast = await getForecast(input.city);
+  if (request !== forecastRequest) return;
+  state.forecast = forecast;
   rebuild();
   persist();
   go("plan");
+}
+
+function submit(input: MoveInput): void {
+  void loadPlan(input);
 }
 
 function toggle(id: string): void {
@@ -117,6 +132,8 @@ function setFilter(filter: Filter): void {
   state.filter = filter;
   render();
   root.querySelector<HTMLButtonElement>(`button[data-filter="${CSS.escape(filter)}"]`)?.focus();
+  const shown = state.cards.filter((c) => filter === "all" || c.tag === filter).length;
+  announce(t().plan.filterShown(shown));
 }
 
 async function setRemember(on: boolean): Promise<void> {
@@ -135,10 +152,24 @@ async function setRemember(on: boolean): Promise<void> {
 function exportCalendar(): void {
   if (!state.input) return;
   const open = state.cards.filter((c) => !state.done.has(c.id));
+  if (!open.length) return; // the button is disabled then; a calendar file must have at least one event
   const ics = buildIcs(open, t().plan.calendarName(state.input.city));
   const slug = state.input.city.toLowerCase().replace(/[^\p{L}]+/gu, "-");
   downloadFile(`movepilot-${slug}.ics`, ics, "text/calendar;charset=utf-8");
   announce(t().plan.calendarDone);
+}
+
+// The printout is the moving-day checklist, so it always has every card, whatever filter is on screen.
+function showAllForPrint(): void {
+  if (state.screen === "plan" && state.filter !== "all") {
+    state.filter = "all";
+    render();
+  }
+}
+
+function printPlan(): void {
+  showAllForPrint();
+  window.print();
 }
 
 function updateNote(key: keyof HomeNotes, value: string): void {
@@ -148,6 +179,7 @@ function updateNote(key: keyof HomeNotes, value: string): void {
 
 async function restart(): Promise<void> {
   if (!window.confirm(t().summary.restartConfirm)) return;
+  forecastRequest++;
   state.input = null;
   state.forecast = null;
   state.cards = [];
@@ -161,15 +193,41 @@ async function restart(): Promise<void> {
   go("form");
 }
 
+type FieldValue = { name: string; value: string; checked: boolean };
+
+/** What the user has typed in the form so far, so a re-render (language change) doesn't lose it. */
+function snapshotForm(): FieldValue[] {
+  return [...root.querySelectorAll<HTMLInputElement>("#move-form input[name]")].map((el) => ({
+    name: el.name,
+    value: el.value,
+    checked: el.checked,
+  }));
+}
+
+function restoreForm(values: FieldValue[]): void {
+  for (const v of values) {
+    const el = [...root.querySelectorAll<HTMLInputElement>(`#move-form input[name="${CSS.escape(v.name)}"]`)].find(
+      (input) => input.type !== "radio" || input.value === v.value,
+    );
+    if (!el) continue;
+    if (el.type === "radio") el.checked = v.checked || el.checked;
+    else el.value = v.value;
+  }
+}
+
 async function changeLang(next: Lang): Promise<void> {
+  const draft = state.screen === "form" ? snapshotForm() : [];
   try {
-    await setLang(next);
+    if (!(await setLang(next))) return; // a later choice replaced this one
   } catch {
-    return; // the language file couldn't load (offline); keep the current language
+    // The language file couldn't load (offline): keep the current language and say so in the picker.
+    header.querySelector<HTMLSelectElement>("#lang")!.value = currentLang();
+    return;
   }
   rebuild();
   renderShell();
   render();
+  restoreForm(draft);
   persist();
   header.querySelector<HTMLSelectElement>("#lang")?.focus();
 }
@@ -186,6 +244,7 @@ async function getForecast(city: string): Promise<Forecast | null> {
 }
 
 async function start(): Promise<void> {
+  window.addEventListener("beforeprint", showAllForPrint);
   const saved = loadSaved();
   try {
     await setLang(saved?.lang ?? detectLang());
@@ -194,18 +253,17 @@ async function start(): Promise<void> {
   }
   renderShell();
 
-  if (saved) {
-    state.remember = true;
-    state.input = saved.input;
-    state.done = new Set(saved.done);
-    state.notes = saved.notes;
-    renderLoading(root, saved.input.city);
-    state.forecast = await getForecast(saved.input.city);
-    rebuild();
-    state.screen = "plan";
-    void enableOffline();
+  if (!saved) {
+    render();
+    // Nothing saved, so nothing may stay on the device: remove an offline cache left behind earlier.
+    void forget();
+    return;
   }
-  render();
+  state.remember = true;
+  state.done = new Set(saved.done);
+  state.notes = saved.notes;
+  void enableOffline();
+  await loadPlan(saved.input);
 }
 
 void start();

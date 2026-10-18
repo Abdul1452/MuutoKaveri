@@ -70,33 +70,51 @@ export function cleanNotes(value: unknown): HomeNotes {
 
 // Offline support. The service worker caches the app and the last forecast, so the plan opens
 // on moving day before the new home has internet. Only in production builds, and only when saving is on.
-export async function enableOffline(): Promise<void> {
-  if (!import.meta.env.PROD || !("serviceWorker" in navigator)) return;
-  try {
-    await navigator.serviceWorker.register("/sw.js");
-    const worker = (await navigator.serviceWorker.ready).active;
-    // Files this page loaded before the worker existed: the scripts, styles and the forecast.
-    const urls = performance
-      .getEntriesByType("resource")
-      .map((e) => new URL(e.name))
-      .filter((u) => u.origin === location.origin && (u.pathname.startsWith("/assets/") || u.pathname === "/api/forecast"))
-      .map((u) => u.pathname + u.search);
-    worker?.postMessage({ type: "precache", urls });
-  } catch {
-    // offline support is a bonus; the app works without it
-  }
+// The worker writes only while the CONSENT cache exists (see public/sw.js), so deleting the caches
+// stops it even if it keeps controlling this tab after it has been unregistered.
+const CONSENT = "movepilot-consent";
+let offlineWanted = false;
+let enabling: Promise<void> | null = null;
+
+export function enableOffline(): Promise<void> {
+  if (!import.meta.env.PROD || !("serviceWorker" in navigator) || !("caches" in window)) return Promise.resolve();
+  offlineWanted = true;
+  enabling = (async () => {
+    try {
+      await caches.open(CONSENT);
+      await navigator.serviceWorker.register("/sw.js");
+      const worker = (await navigator.serviceWorker.ready).active;
+      if (!offlineWanted) return; // turned off while the worker was installing
+      // Files this page loaded before the worker existed: the scripts, styles and the forecast.
+      const urls = performance
+        .getEntriesByType("resource")
+        .map((e) => new URL(e.name))
+        .filter((u) => u.origin === location.origin && (u.pathname.startsWith("/assets/") || u.pathname === "/api/forecast"))
+        .map((u) => u.pathname + u.search);
+      worker?.postMessage({ type: "precache", urls });
+    } catch {
+      // offline support is a bonus; the app works without it
+    }
+  })();
+  return enabling;
+}
+
+async function deleteCaches(): Promise<void> {
+  if (!("caches" in window)) return;
+  const keys = await caches.keys();
+  await Promise.all(keys.filter((k) => k.startsWith(CACHE_PREFIX)).map((k) => caches.delete(k)));
 }
 
 async function disableOffline(): Promise<void> {
+  offlineWanted = false;
   try {
+    await deleteCaches(); // first, so the worker stops writing at once
+    await enabling; // let a registration that is still in progress finish, then remove it too
     if ("serviceWorker" in navigator) {
       const registrations = await navigator.serviceWorker.getRegistrations();
       await Promise.all(registrations.map((r) => r.unregister()));
     }
-    if ("caches" in window) {
-      const keys = await caches.keys();
-      await Promise.all(keys.filter((k) => k.startsWith(CACHE_PREFIX)).map((k) => caches.delete(k)));
-    }
+    await deleteCaches(); // anything written while the worker was being removed
   } catch {
     // nothing to remove
   }

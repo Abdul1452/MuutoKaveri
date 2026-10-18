@@ -2,7 +2,7 @@
 
 ## Summary
 
-MovePilot is a small prevention tool with a very light direct footprint. Its main sustainability value is indirect: helping people find leak and frost risks in a new home before they cause damage, since repairs mean new materials, drying equipment and building waste. The prototype already does well on privacy and accessibility by design. It is weak on inclusion (English only) and it has no measured evidence yet that it prevents any damage. The leak sensor offer brings hardware, and so e-waste, into an otherwise digital service.
+MovePilot is a small prevention tool with a very light direct footprint. Its main sustainability value is indirect: helping people find leak and frost risks in a new home before they cause damage, since repairs mean new materials, drying equipment and building waste. The prototype already does well on privacy and accessibility by design. Version 0.2 adds Finnish and Swedish, which closes the biggest inclusion gap, though the translations still need a native-speaker check. It still has no measured evidence that it prevents any damage. The leak sensor offer brings hardware, and so e-waste, into an otherwise digital service.
 
 | Dimension | Score (1–5) | Confidence |
 |---|---|---|
@@ -31,7 +31,7 @@ The business case for prevention rests on the size of leak damage. In 2021 Finni
 
 ### Ecological
 
-**Direct footprint.** One visit transfers about 10 kB compressed: 6.5 kB of JavaScript, 1.7 kB of CSS and 1.3 kB of HTML, plus a forecast response under 1 kB. The median web page in 2024 was 2.3 MB on mobile and 2.6 MB on desktop (HTTP Archive). This follows Ympäristö OK Web 2 (lightweight front end) and Web 5 (few browser dependencies): the browser loads no third-party libraries.
+**Direct footprint.** The first visit transfers about 24 kB compressed: 18 kB of JavaScript, 5 kB of CSS and under 1 kB of HTML, plus a forecast response under 1 kB. Finnish and Swedish texts (about 7 kB each) load only for people who choose them. `npm run budget` fails the build above 50 kB. The median web page in 2024 was 2.3 MB on mobile and 2.6 MB on desktop (HTTP Archive). This follows Ympäristö OK Web 2 (lightweight front end) and Web 5 (few browser dependencies): the browser loads no third-party libraries.
 - There is no tracking, no media and no fonts to download (Web 1, Web 4).
 - The server caches each city's forecast for 30 minutes, so repeat visits don't call FMI again. This follows Motiva's cache criterion and Web 3.
 - Build files are cached by the browser for a year.
@@ -43,11 +43,11 @@ The business case for prevention rests on the size of leak damage. In 2021 Finni
 
 ### Social
 
-**Privacy.** Nothing the user enters leaves the browser except the city name, and nothing is stored (SDG 16.10).
+**Privacy.** Nothing the user enters leaves the browser except the city name, which the server does not log. Nothing is stored on the device unless the user turns on "Save on this device", which keeps the plan and notes in local storage and the app in an offline cache; turning it off deletes both (SDG 16.10).
 
-**Accessibility.** An automated axe-core check against WCAG 2.1 A and AA found no violations on any screen, in light and dark mode. Every text colour is checked against WCAG contrast ratios. Keyboard focus moves to each new screen's heading and stays on a checkbox after it is ticked (SDG 10.2).
+**Accessibility.** Lighthouse (axe-core) scores 100 for accessibility on the form and plan screens of the production build. `npm run contrast` checks every colour pair in light and dark mode, and states stay visible in Windows High Contrast mode. Keyboard focus moves to each new screen's heading and stays on a checkbox after it is ticked (SDG 10.2).
 
-**Exclusion.** The app is in English only. Finland has two national languages, and many older people and recent movers read neither English nor technical advice comfortably. It is also digital-only, which leaves out people who manage their affairs by phone or with a relative's help. The 2030 Agenda principle "leave no one behind" points at exactly these groups.
+**Exclusion.** The app is now in English, Finnish and Swedish, Finland's two national languages, but the translations still need a native-speaker check. It is still digital-first, although the plan and the home's key facts can now be printed. It still leaves out some people who manage their affairs by phone or with a relative's help. The 2030 Agenda principle "leave no one behind" points at exactly these groups.
 
 **Advice quality.** The plan gives general information and says that the user's own policy decides cover. It doesn't recommend products.
 
@@ -63,8 +63,8 @@ The rules sit in one readable file (`src/rules.ts`), each with its source. The c
 
 | Law | What it requires | MovePilot today | Gap |
 |---|---|---|---|
-| GDPR (EU 2016/679) and Data Protection Act 1050/2018 | Data minimisation, storage limitation, data protection by design (Art. 5, 25), and telling people what is processed (Art. 13) | No accounts, no storage. A privacy notice is in the footer. | Hosting logs keep IP addresses, which are personal data (CJEU C-582/14). Set short log retention and mention it in the notice. |
-| Act on Electronic Communications Services 917/2014, section 205 (cookies) | Consent before storing or reading data on the user's device, unless strictly necessary | No cookies or local storage, so no consent banner is needed | None |
+| GDPR (EU 2016/679) and Data Protection Act 1050/2018 | Data minimisation, storage limitation, data protection by design (Art. 5, 25), and telling people what is processed (Art. 13) | No accounts. Device storage only after opt-in. A privacy notice is in the footer, and the server does not log city names. | Hosting logs keep IP addresses, which are personal data (CJEU C-582/14). Set short log retention and mention it in the notice. |
+| Act on Electronic Communications Services 917/2014, section 205 (cookies) | Consent before storing or reading data on the user's device, unless strictly necessary | No cookies. Local storage and the offline cache are used only after the user turns on "Save on this device", and turning it off deletes them, so no consent banner is needed | None |
 | European Accessibility Act (2019/882) and Act on the Provision of Digital Services 306/2019 | EN 301 549, in practice WCAG 2.1 A and AA. If's own accessibility statement says the Act covers its statutory insurance tasks and, since 28 June 2025, consumer e-commerce. | No automated WCAG 2.1 AA violations. Keyboard and screen-reader support built in. | Manual testing with a screen reader and an accessibility statement before production |
 | Insurance Distribution Directive (2016/97) and Act on Insurance Distribution 234/2018 | Rules for advising on or proposing insurance contracts | General checklist only, with no product comparison or recommendation | If If runs it, If's compliance should review the cover-check wording and the link to the move notice |
 | Consumer Protection Act 38/1978, chapter 2 | Marketing must be recognisable as marketing and show who is behind it | The sensor offer is labelled "Offer concept" | In production, label it as If's offer |
@@ -98,8 +98,8 @@ The main conflict is between If's interest in personalised offers and data, and 
 
 | Dimension | Score | Evidence | Confidence |
 |---|---|---|---|
-| Ecological | 3.5 | About 10 kB per visit; forecast caching; no AI or database. Enabling value is unmeasured, and the sensor offer brings hardware. | Medium |
-| Social | 3 | Privacy and WCAG 2.1 AA by design, with 0 axe violations. English only and digital only. | Medium |
+| Ecological | 3.5 | About 24 kB first visit with a 50 kB budget in the build; forecast caching; no AI or database. Enabling value is unmeasured, and the sensor offer brings hardware. | Medium |
+| Social | 3 | Privacy and WCAG 2.1 AA by design (Lighthouse accessibility 100). English, Finnish and Swedish; translations not yet checked by native speakers. Digital-first, with a printable plan. | Medium |
 | Economic | 3.5 | Large leak claim costs; very low running cost. Effect not measured. | Low |
 | Technical | 4 | One readable rules file with sources; few dependencies; open licence and API | High |
 
@@ -115,6 +115,17 @@ The main conflict is between If's interest in personalised offers and data, and 
 | 6 | Add axe and a 50 kB page budget to the CI definition of done | Technical, Ecological | Medium | Low | Team | Builds passing both checks |
 | 7 | Build it into If's existing move notice instead of a new app (reduction first) | Ecological, Social | Medium | Medium | If | Users reached without a new install |
 | 8 | Have If's compliance team review the cover and offer texts (IDD, Consumer Protection Act) | Economic, Social | Medium | Low | If | Review done before launch |
+
+## 8a. Done in version 0.2
+
+| Action | Status |
+|---|---|
+| 1. Finnish and Swedish versions | Done; texts need a native-speaker check before production |
+| 3. Sensors only for high-risk homes | Done in the app: the offer shows only for buildings from 1989 or earlier or appliances 7 years or older, says why, and asks for a replaceable battery and recycling. Take-back is still for If to arrange |
+| 4. Log retention | Partly: the server no longer logs city names. Hosting log retention still has to be set |
+| 6. Page budget and checks in the definition of done | Done for the page budget and colour contrast (`npm run check`). axe runs through Lighthouse by hand, not yet in CI |
+
+New in 0.2 with a sustainability angle: sustainable-move cards (sell, donate or recycle before packing; reusable boxes; waste sorting; room temperatures, with Motiva as the source), calendar export and printing without any account, and opt-in offline use so the plan works before the new home has internet.
 
 ## 9. Sources
 

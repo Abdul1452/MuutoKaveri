@@ -45,5 +45,8 @@ export function todayIso(): string {
 }
 
 export function isIsoDate(value: unknown): value is string {
-  return typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value) && !Number.isNaN(toDate(value).getTime());
+  if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+  // Round-trip, so impossible dates such as 2026-02-31 (which Date rolls over to March) are rejected.
+  const d = toDate(value);
+  return !Number.isNaN(d.getTime()) && d.toISOString().slice(0, 10) === value;
 }

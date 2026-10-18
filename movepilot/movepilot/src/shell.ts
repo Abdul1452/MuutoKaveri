@@ -47,7 +47,7 @@ export function stepper(current: 1 | 2 | 3): string {
           return `
           <li class="step step-${state}" ${n === current ? 'aria-current="step"' : ""}>
             <span class="step-dot" aria-hidden="true">${n < current ? icon("check", "icon icon-xs") : n}</span>
-            <span class="step-name"><span class="sr-only">${esc(m.steps.of(n, m.steps.names.length))}: </span>${esc(name)}</span>
+            <span class="step-name"><span class="sr-only">${esc(m.steps.of(n, m.steps.names.length))}: </span>${esc(name)}${n < current ? `<span class="sr-only"> (${esc(m.steps.done)})</span>` : ""}</span>
           </li>`;
         })
         .join("")}

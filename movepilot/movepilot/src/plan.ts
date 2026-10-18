@@ -34,6 +34,7 @@ export interface PlanActions {
   onFilter: (filter: Filter) => void;
   onRemember: (on: boolean) => void;
   onCalendar: () => void;
+  onPrint: () => void;
   onBack: () => void;
   onNext: () => void;
 }
@@ -91,7 +92,7 @@ export function renderPlan(root: HTMLElement, view: PlanView, actions: PlanActio
           ${tags.map((tag) => filterButton(tag, m.tags[tag], cards.filter((c) => c.tag === tag).length, view.filter)).join("")}
         </div>
         <div class="tools">
-          <button type="button" class="btn btn-ghost" id="calendar">${icon("calendar")} ${esc(p.calendar)}</button>
+          <button type="button" class="btn btn-ghost" id="calendar" ${doneCount === cards.length ? "disabled" : ""}>${icon("calendar")} ${esc(p.calendar)}</button>
           <button type="button" class="btn btn-ghost" id="print">${icon("printer")} ${esc(p.print)}</button>
         </div>
       </div>
@@ -144,7 +145,7 @@ export function renderPlan(root: HTMLElement, view: PlanView, actions: PlanActio
     actions.onRemember((e.target as HTMLInputElement).checked),
   );
   root.querySelector("#calendar")!.addEventListener("click", actions.onCalendar);
-  root.querySelector("#print")!.addEventListener("click", () => window.print());
+  root.querySelector("#print")!.addEventListener("click", actions.onPrint);
   root.querySelector("#back")!.addEventListener("click", actions.onBack);
   root.querySelector("#next")!.addEventListener("click", actions.onNext);
 }
