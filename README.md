@@ -81,6 +81,7 @@ The server exists for one reason: FMI returns XML, and a server-side call avoids
 MuutoKaveri/
 ├── README.md
 ├── package.json
+├── vercel.json          Vercel build, security headers, function region
 ├── index.html
 ├── src/
 │   ├── main.ts          screen flow and state
@@ -106,8 +107,12 @@ MuutoKaveri/
 │   ├── budget.mjs       page-weight budget (60 kB first visit, font included)
 │   └── contrast.mjs     WCAG contrast check for every colour pair
 ├── test/                unit tests (node:test), including the FMI XML parser
+├── api/
+│   └── forecast.ts      Vercel function for /api/forecast
 └── server/
-    ├── index.ts         Express app, /api/forecast
+    ├── index.ts         Express app, /api/forecast (local and self-hosted)
+    ├── forecast.ts      forecast cache and fallback, shared with the Vercel function
+    ├── headers.ts       security headers
     ├── fmi.ts           FMI request and XML parsing
     ├── save-fixture.ts  saves a real FMI forecast as the fallback
     └── fixtures/
@@ -138,6 +143,16 @@ npm run build
 npm start          # serves the app and the API on port 3001
 ```
 
+### Deploy to Vercel
+
+Live at https://muutokaveri.vercel.app. Vercel serves the Vite build as static files and runs [api/forecast.ts](api/forecast.ts) as a function in Stockholm (`arn1`), close to FMI and to Finnish users. The function shares the forecast cache and fallback with the Express server ([server/forecast.ts](server/forecast.ts)). [vercel.json](vercel.json) sets the same security headers as the Express server (a unit test keeps the two lists in sync) and caches the hashed assets for a year. Vercel's CDN keeps each city's forecast for as long as the server cache would, so repeat requests don't start the function or call FMI.
+
+The GitHub repository is connected to the Vercel project: a push to `main` deploys to production, and other branches get preview links. To deploy by hand:
+
+```bash
+vercel deploy --prod
+```
+
 Before you commit, run all the checks: type check, unit tests, colour contrast, build and the page-weight budget.
 
 ```bash
@@ -150,7 +165,7 @@ The full assessment, including the legal check, is in [docs/SUSTAINABILITY.md](d
 
 - The first visit transfers about 58 kB compressed: 30 kB of code and styles and a 28 kB font, plus a forecast response under 1 kB. The Finnish or Swedish texts add about 8 kB, and only for people who choose that language. The median web page in 2024 was 2.3 MB on mobile ([HTTP Archive](https://almanac.httparchive.org/en/2024/page-weight)), so a visit is about 2.5% of that. There is no tracking, no photos (the hero art is a small inline drawing), no third-party requests and no AI. The font is self-hosted and only its Latin subset loads. `npm run budget` fails the build if the first visit goes over 60 kB.
 - The server caches each city's forecast for 30 minutes, so repeat visits don't call FMI again.
-- Privacy by design (GDPR Art. 5 and 25): no accounts or cookies. Only the city name leaves the browser, and the server does not log it. Nothing is stored on the device unless the user turns on **Save on this device**; turning it off deletes the saved plan and the offline cache, and the service worker stops writing at once.
+- Privacy by design (GDPR Art. 5 and 25): no accounts or cookies. Only the city name leaves the browser, and the app's code does not log it. On Vercel, the platform's own request logs include the request URL, and with it the city name, for their retention period. Nothing is stored on the device unless the user turns on **Save on this device**; turning it off deletes the saved plan and the offline cache, and the service worker stops writing at once.
 - Accessibility: built for WCAG 2.1 AA, the level required by the European Accessibility Act and Finland's Act on the Provision of Digital Services. Lighthouse (axe-core) scores 100 for accessibility on the form and plan screens of the production build. Colours are Signal violet (`#7A35FF`) on mist gray (`#F0F2F5`), in light and dark mode; `npm run contrast` checks that every text pair meets 4.5:1 and every control border, progress bar and focus ring meets 3:1. States stay visible in Windows High Contrast mode.
 - Every fact on a card links to its Finnish source.
 
