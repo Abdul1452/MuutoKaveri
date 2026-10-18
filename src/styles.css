@@ -729,7 +729,8 @@ progress::-moz-progress-bar { background: var(--fill); border-radius: 999px; }
   .summary-grid > * { margin-top: 12px; }
 }
 
-/* Very narrow screens (320px, or 400% zoom): the wordmark gives way so every button stays on screen. */
-@media (max-width: 379px) {
+/* Narrow screens (320px, 400% zoom, or under 390px with four header buttons in Swedish): the wordmark gives way
+   so every button stays on screen. */
+@media (max-width: 389px) {
   .brand-name { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 }
