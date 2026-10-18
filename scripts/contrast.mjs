@@ -3,10 +3,19 @@
 import { readFileSync } from "node:fs";
 
 const css = readFileSync(new URL("../src/styles.css", import.meta.url), "utf8");
-const darkStart = css.indexOf("@media (prefers-color-scheme: dark)");
+const darkStart = css.indexOf("@media screen and (prefers-color-scheme: dark)");
+const forcedStart = css.indexOf('@media screen {\n  :root[data-theme="dark"]');
 const tokens = (block) => Object.fromEntries([...block.matchAll(/--([\w-]+):\s*(#[0-9a-f]{6})\b/gi)].map((m) => [m[1], m[2]]));
 const light = tokens(css.slice(0, darkStart));
-const dark = { ...light, ...tokens(css.slice(darkStart, css.indexOf("/* ---------- Base", darkStart))) };
+const systemDark = tokens(css.slice(darkStart, forcedStart));
+const forcedDark = tokens(css.slice(forcedStart, css.indexOf("/* ---------- Base", forcedStart)));
+const dark = { ...light, ...systemDark };
+
+// Dark mode is defined twice (system setting and header switch); both must give the same colours.
+if (darkStart < 0 || forcedStart < 0 || JSON.stringify(systemDark) !== JSON.stringify(forcedDark)) {
+  console.error("The two dark-mode token blocks in src/styles.css differ, or one is missing.");
+  process.exit(1);
+}
 
 // [foreground, background, minimum ratio]. 4.5 for text, 3 for borders and graphics.
 const PAIRS = [
