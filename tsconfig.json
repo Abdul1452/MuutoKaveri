@@ -12,5 +12,5 @@
     "isolatedModules": true,
     "allowImportingTsExtensions": true
   },
-  "include": ["src", "server", "test"]
+  "include": ["src", "server", "api", "test"]
 }

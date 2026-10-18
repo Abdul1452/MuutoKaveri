@@ -78,7 +78,7 @@ The server exists for one reason: FMI returns XML, and a server-side call avoids
 ## Project structure
 
 ```
-movepilot/
+MuutoKaveri/
 ├── README.md
 ├── package.json
 ├── index.html
@@ -105,7 +105,7 @@ movepilot/
 ├── scripts/
 │   ├── budget.mjs       page-weight budget (60 kB first visit, font included)
 │   └── contrast.mjs     WCAG contrast check for every colour pair
-├── test/                unit tests (node:test)
+├── test/                unit tests (node:test), including the FMI XML parser
 └── server/
     ├── index.ts         Express app, /api/forecast
     ├── fmi.ts           FMI request and XML parsing
@@ -159,7 +159,7 @@ The full assessment, including the legal check, is in [docs/SUSTAINABILITY.md](d
 - The rules are simplified examples written during the hackathon. They are not If's underwriting rules or insurance terms.
 - Cover depends on the customer's own policy. MuutoKaveri tells the user what to check and where; it does not decide what is covered.
 - The weather card uses the forecast for the city centre, not the exact address, and the forecast reaches only two to three days ahead.
-- The Finnish and Swedish texts were translated and reviewed with AI help and still need a check by a native speaker before production.
+- The Finnish and Swedish texts were translated with AI help and then proofread in a second AI review, in which an independent reviewer had to confirm each fix. They still need a check by a native speaker before production.
 - The server has no per-IP rate limit on `/api/forecast` yet; its cache is bounded and repeat requests share one FMI call, but a production host should add a rate limit.
 - The effect on damage and claims has not been measured yet.
 

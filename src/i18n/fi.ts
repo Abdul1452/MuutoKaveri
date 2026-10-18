@@ -117,7 +117,7 @@ export const fi: Messages = {
     steps: {
       welcome: {
         title: "Tervetuloa MuutoKaveriin",
-        body: "Tämä esittelykierros näyttää jokaisen työkalun vastauksistasi valmiiseen suunnitelmaan. Se kestää noin minuutin. Voit lopettaa milloin tahansa painamalla Esc-näppäintä.",
+        body: "Tämä esittelykierros käy läpi kaikki työkalut aina vastauksistasi valmiiseen suunnitelmaan. Se kestää noin minuutin. Voit lopettaa milloin tahansa painamalla Esc-näppäintä.",
       },
       language: {
         title: "Valitse kieli",
@@ -133,7 +133,7 @@ export const fi: Messages = {
       },
       submit: {
         title: "Tee suunnitelma",
-        body: "Kun jatkat, suunnitelma tehdään lomakkeen vastausten perusteella. Voit muuttaa vastauksia myöhemmin.",
+        body: "Kun valitset ”Tee suunnitelma”, suunnitelma tehdään lomakkeen vastausten perusteella. Voit muuttaa vastauksia myöhemmin.",
       },
       progress: {
         title: "Seuraa etenemistä",
@@ -149,7 +149,7 @@ export const fi: Messages = {
       },
       card: {
         title: "Merkitse tehtävät tehdyiksi",
-        body: "Jokaisella tehtävällä on päivämäärä. Merkitse tehtävä, kun se on tehty. Tärkeissä tehtävissä on violetti reuna. Linkeistä pääset palveluun ja kunkin tiedon lähteeseen.",
+        body: "Jokaisella tehtävällä on päivämäärä. Merkitse tehtävä tehdyksi, kun se on valmis. Tärkeissä tehtävissä on violetti reuna. Linkeistä pääset palveluun ja kunkin tiedon lähteeseen.",
       },
       tools: {
         title: "Kalenteri ja tulostus",
@@ -319,7 +319,7 @@ export const fi: Messages = {
       "Jos otat käyttöön asetuksen ”Tallenna tähän laitteeseen”, vastauksesi, merkintäsi ja muistiinpanosi säilytetään selaimen paikallisessa tallennustilassa, ja sovellus tallennetaan välimuistiin, jotta se toimii ilman verkkoyhteyttä. Mitään ei lähetetä minnekään. Kun poistat asetuksen käytöstä, kaikki nämä tiedot poistetaan.",
     accessibilityTitle: "Saavutettavuus",
     accessibility:
-      "MuutoKaveri on suunniteltu täyttämään WCAG 2.1 -ohjeiston AA-tason vaatimukset. Sitä voi käyttää näppäimistöllä ja ruudunlukijalla, värit täyttävät kontrastivaatimukset ja sovellus noudattaa vaalean tai tumman tilan asetustasi. Löysitkö ongelman? Kerro siitä avaamalla issue projektin repositoriossa.",
+      "MuutoKaveri on suunniteltu täyttämään WCAG 2.1 -ohjeiston AA-tason vaatimukset. Sitä voi käyttää näppäimistöllä ja ruudunlukijalla, värit täyttävät kontrastivaatimukset ja sovellus noudattaa vaalean tai tumman tilan asetustasi. Löysitkö ongelman? Kerro siitä tekemällä ilmoituksen (issue) projektin repositorioon.",
     sourcesTitle: "Lähteet",
     sourceItems: [
       { topic: "Muuttajien tietämys vakuutusturvasta", label: "If-kysely, MTV Uutiset", href: "https://www.mtvuutiset.fi/artikkeli/tata-moni-ei-tieda-korvaako-kotivakuutus-muutoissa-sattuvat-vahingot/4737448" },
@@ -354,7 +354,7 @@ export const fi: Messages = {
     },
     declutter: {
       title: "Myy, lahjoita tai kierrätä se, mitä et ota mukaan",
-      body: "Jokainen laatikko, jota ei tarvitse kuljettaa, säästää pakkaamista, tilaa muuttoautossa ja polttoainetta. Lahjoita käyttökelpoiset tavarat kierrätyskeskukseen tai myy ne. Vie elektroniikka, paristot ja vanhat maalit maksuttomaan keräyspisteeseen.",
+      body: "Jokainen laatikko, jota ei tarvitse kuljettaa, vähentää pakkaamista ja säästää tilaa muuttoautossa sekä polttoainetta. Lahjoita käyttökelpoiset tavarat kierrätyskeskukseen tai myy ne. Vie elektroniikka, paristot ja vanhat maalit maksuttomaan keräyspisteeseen.",
       link: "Etsi keräyspiste",
     },
     boxes: {
@@ -363,7 +363,7 @@ export const fi: Messages = {
     },
     officialNotice: {
       title: "Tee virallinen muuttoilmoitus",
-      body: "Yhdellä ilmoituksella tiedot päivittyvät väestötietojärjestelmään ja Postille. Voit tehdä ilmoituksen aikaisintaan kuukautta ennen muuttoa ja viimeistään viikon kuluttua muutosta.",
+      body: "Yhdellä ilmoituksella tietosi päivittyvät väestötietojärjestelmään ja Postin osoitetietoihin. Voit tehdä ilmoituksen aikaisintaan kuukautta ennen muuttoa ja viimeistään viikon kuluttua muutosta.",
       link: "Muuttoilmoitus Postissa",
     },
     insurerNotice: {
@@ -416,7 +416,7 @@ export const fi: Messages = {
     },
     smokeAlarm: {
       title: "Testaa palovaroittimet",
-      body: "Asunnossa pitää olla vähintään yksi palovaroitin jokaisen kerroksen alkavaa 60 neliömetriä kohti. Testaa palovaroittimet ensimmäisellä viikolla. Taloyhtiössä palovaroittimet huoltaa taloyhtiö, joten ilmoita viallisesta varoittimesta tai loppuneesta paristosta sille heti.",
+      body: "Asunnon jokaisessa kerroksessa pitää olla vähintään yksi palovaroitin jokaista alkavaa 60 neliömetriä kohti. Testaa palovaroittimet ensimmäisellä viikolla. Taloyhtiössä palovaroittimet huoltaa taloyhtiö, joten ilmoita viallisesta varoittimesta tai loppuneesta paristosta sille heti.",
     },
     pipeHistory: {
       houseTitle: "Selvitä, milloin putket on viimeksi uusittu",
