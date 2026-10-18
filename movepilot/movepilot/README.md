@@ -15,14 +15,20 @@ Today If's moving service is the move notice that transfers the home insurance t
 ## What MovePilot does
 
 1. **Tell us about the move.** The user enters the move date, the new city, the home type (apartment or detached house), the building year, the age of the washing machine and dishwasher, and whether they know their cover level.
-2. **Get a plan.** MovePilot builds a timeline in three parts: before the move, moving day, and the first 30 days. Each card is one action, for example:
+2. **Get a plan.** MovePilot builds a timeline in three parts: before the move, moving day, and the first 30 days. Each card is one action with a suggested date, for example:
    - Check whether your things are covered while you move.
    - Your building is from 1985: find the main water shut-off valve on day one.
    - Your dishwasher is 8 years old: check the hoses before you connect it.
    - Frost is forecast for Tuesday: keep the cellar heated. (live weather from FMI)
-3. **Finish in two taps.** A summary of the plan and a button that opens If's existing move notice, so the insurance is updated in the same flow.
+   - Sell, donate or recycle what you won't take, and rent reusable moving boxes.
 
-No login and no customer data. Everything the user enters stays in the browser.
+   The user ticks cards off, filters them by topic (cover, leak risk, weather, sustainable, admin, safety), adds the open ones to their phone calendar as an `.ics` file, or prints the plan.
+3. **Finish in two taps.** A summary of what is still open and a button that opens If's existing move notice, so the insurance is updated in the same flow. The summary also has:
+   - a place to write down the new home's key facts on moving day: where the main water shut-off and the fuse box are, the maintenance phone number and the meter readings
+   - what to do if water leaks, in four steps
+   - the leak sensor offer, shown only when the home has a raised leak risk (old building or old appliances) and the reason why
+
+No login and no customer data. The app works in English, Finnish and Swedish. By default everything the user enters stays in the browser tab. If the user turns on **Save on this device**, the plan, ticks and notes are kept in the browser and the app works offline on moving day, before the new home has internet. Turning it off deletes everything.
 
 ## Why it matters for If
 
@@ -65,13 +71,27 @@ movepilot/
 ├── index.html
 ├── src/
 │   ├── main.ts          screen flow and state
+│   ├── shell.ts         header with language picker, step indicator, footer
 │   ├── form.ts          screen 1: move details
-│   ├── plan.ts          screen 2: timeline
-│   ├── summary.ts       screen 3: summary and move notice link
-│   ├── rules.ts         inputs + forecast → cards
+│   ├── plan.ts          screen 2: timeline, filters, forecast strip
+│   ├── summary.ts       screen 3: open items, move notice, home facts, leak steps
+│   ├── rules.ts         inputs + forecast → cards with due dates
+│   ├── i18n/            en.ts (source texts), fi.ts, sv.ts; fi and sv load only when chosen
+│   ├── ics.ts           calendar export, made in the browser
+│   ├── storage.ts       opt-in "Save on this device" and offline support
+│   ├── validate.ts      input checks shared by the form, saved data and the server
+│   ├── icons.ts         inline SVG icons
 │   ├── types.ts         shared types
 │   ├── util.ts          HTML escaping and dates
-│   └── styles.css
+│   └── styles.css       design tokens, light and dark mode, print
+├── public/
+│   ├── sw.js            service worker, registered only when saving is on
+│   ├── manifest.webmanifest
+│   └── icon.svg
+├── scripts/
+│   ├── budget.mjs       page-weight budget (50 kB first visit)
+│   └── contrast.mjs     WCAG contrast check for every colour pair
+├── test/                unit tests (node:test)
 └── server/
     ├── index.ts         Express app, /api/forecast
     ├── fmi.ts           FMI request and XML parsing
@@ -104,6 +124,12 @@ npm run build
 npm start          # serves the app and the API on port 3001
 ```
 
+Before you commit, run all the checks: type check, unit tests, colour contrast, build and the page-weight budget.
+
+```bash
+npm run check
+```
+
 ## Sustainability, privacy and accessibility
 
 The full assessment, including the legal check, is in [docs/SUSTAINABILITY.md](docs/SUSTAINABILITY.md). In short:
@@ -119,7 +145,7 @@ The full assessment, including the legal check, is in [docs/SUSTAINABILITY.md](d
 - The rules are simplified examples written during the hackathon. They are not If's underwriting rules or insurance terms.
 - Cover depends on the customer's own policy. MovePilot tells the user what to check and where; it does not decide what is covered.
 - The weather card uses the forecast for the city centre, not the exact address, and the forecast reaches only two to three days ahead.
-- The app is in English only. Finnish and Swedish versions are the first planned improvement.
+- The Finnish and Swedish texts were translated and reviewed with AI help and still need a check by a native speaker before production.
 - The effect on damage and claims has not been measured yet.
 
 ## Team

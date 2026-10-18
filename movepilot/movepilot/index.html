@@ -4,39 +4,25 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="A moving companion that turns your move date into a personal plan for the move and your first 30 days." />
-    <meta name="theme-color" content="#844c82" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#f0f2f5" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0f0e15" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+    <link rel="manifest" href="/manifest.webmanifest" />
     <title>MovePilot – plan your move</title>
   </head>
   <body>
     <a class="skip-link" href="#app">Skip to content</a>
-    <header class="topbar">
-      <span class="logo" aria-hidden="true"></span>
-      <span class="brand">MovePilot</span>
-    </header>
+    <header class="topbar" id="top"></header>
 
-    <main id="app" tabindex="-1"></main>
+    <main id="app" tabindex="-1">
+      <noscript>
+        <div class="page"><p class="panel">MovePilot needs JavaScript to build your plan. / MovePilot tarvitsee JavaScriptin. / MovePilot behöver JavaScript.</p></div>
+      </noscript>
+    </main>
 
-    <footer class="foot">
-      <details>
-        <summary>Privacy, accessibility and sources</summary>
-
-        <h2>Privacy</h2>
-        <p>MovePilot has no accounts, cookies, analytics or tracking. Your answers stay in this browser tab and disappear when you close it. Only the city name is sent to our server, which uses it to fetch the weather forecast and does not store it.</p>
-
-        <h2>Accessibility</h2>
-        <p>MovePilot is built to meet WCAG 2.1 level AA: it works with a keyboard and screen readers, colours meet contrast requirements, and it follows your light or dark mode setting. Found a problem? Open an issue in the project repository.</p>
-
-        <h2>Sources</h2>
-        <ul>
-          <li>Movers' insurance knowledge: If survey, reported by <a href="https://www.mtvuutiset.fi/artikkeli/tata-moni-ei-tieda-korvaako-kotivakuutus-muutoissa-sattuvat-vahingot/4737448">MTV Uutiset</a>.</li>
-          <li>Leak claims in Finland, 2021: <a href="https://www.sttinfo.fi/tiedote/69941993/vuotovahingot-kaantyivat-nousuun-putkiremontin-suunnittelu-kannattaa-aloittaa-jo-ennen-kuin-putket-vanhenevat-kasiin">Finanssiala via STT</a>.</li>
-          <li>Leak causes and building age: Pohjola, reported by <a href="https://www.verkkouutiset.fi/a/vuotovahingoista-voi-tulla-omakotiasujalle-huikea-lasku/">Verkkouutiset 2021</a>.</li>
-          <li>Appliance age and average leak cost: Pohjola, reported by <a href="https://www.verkkouutiset.fi/a/yleinen-kodinkone-voi-aiheuttaa-jopa-100000-euron-vahingot/">Verkkouutiset 2024</a>.</li>
-          <li>Weather forecast: <a href="https://en.ilmatieteenlaitos.fi/open-data">Finnish Meteorological Institute open data</a>, CC BY 4.0.</li>
-        </ul>
-        <p>Built at JunctionX Turku 2026. The plan gives general information, not insurance advice; your own policy terms decide what is covered.</p>
-      </details>
-    </footer>
+    <footer class="foot" id="foot"></footer>
+    <div id="live" class="sr-only" role="status" aria-live="polite"></div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

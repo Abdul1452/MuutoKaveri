@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url";
 import path from "node:path";
 import { fetchForecast } from "./fmi.ts";
 import type { Forecast } from "../src/types.ts";
+import { CITY_PATTERN } from "../src/validate.ts";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const FIXTURE = path.join(here, "fixtures", "forecast-turku.json");
@@ -12,13 +13,25 @@ const PORT = Number(process.env.PORT ?? 3001);
 const app = express();
 app.disable("x-powered-by");
 
+// The app loads nothing from other origins and has no inline scripts or styles, so the policy can be strict.
+app.use((_req, res, next) => {
+  res.set({
+    "Content-Security-Policy":
+      "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'self'; " +
+      "font-src 'none'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'; " +
+      "manifest-src 'self'; worker-src 'self'",
+    "X-Content-Type-Options": "nosniff",
+    "Referrer-Policy": "strict-origin-when-cross-origin",
+    "Permissions-Policy": "camera=(), microphone=(), geolocation=(), payment=()",
+    "Cross-Origin-Opener-Policy": "same-origin",
+  });
+  next();
+});
+
 // Forecasts change a few times a day, so one FMI call per city per 30 minutes is enough.
 // This cuts repeat calls to FMI (Motiva: efficient use of caches; Ympäristö OK Web 3).
 const CACHE_MS = 30 * 60 * 1000;
 const cache = new Map<string, { at: number; forecast: Forecast }>();
-
-// Letters (incl. å, ä, ö), spaces and hyphens only; FMI takes a place name.
-const CITY_PATTERN = /^[\p{L} -]{2,40}$/u;
 
 app.get("/api/forecast", async (req, res) => {
   const city = String(req.query.city ?? "").trim();
@@ -51,6 +64,7 @@ if (process.env.NODE_ENV === "production") {
   const dist = path.join(here, "..", "dist");
   // Hashed build assets never change, so browsers can keep them for a year; index.html is always revalidated.
   app.use("/assets", express.static(path.join(dist, "assets"), { immutable: true, maxAge: "365d" }));
+  // index.html, sw.js and the manifest are always revalidated, so updates reach users straight away.
   app.use(express.static(dist, { maxAge: 0 }));
   app.get("*", (_req, res) => res.sendFile(path.join(dist, "index.html")));
 }

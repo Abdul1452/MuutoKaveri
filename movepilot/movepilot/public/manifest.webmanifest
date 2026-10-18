@@ -1,0 +1,11 @@
+{
+  "name": "MovePilot",
+  "short_name": "MovePilot",
+  "description": "A personal plan for your move and your first 30 days in the new home.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f0f2f5",
+  "theme_color": "#7a35ff",
+  "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}

@@ -1,6 +1,6 @@
 {
   "name": "movepilot",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -8,7 +8,11 @@
     "build": "tsc --noEmit && vite build",
     "start": "NODE_ENV=production tsx server/index.ts",
     "save-fixture": "tsx server/save-fixture.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "tsx --test \"test/*.test.ts\"",
+    "budget": "node scripts/budget.mjs",
+    "contrast": "node scripts/contrast.mjs",
+    "check": "npm run typecheck && npm test && npm run contrast && npm run build && npm run budget"
   },
   "dependencies": {
     "express": "^4.21.2",

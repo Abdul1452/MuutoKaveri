@@ -1,13 +1,29 @@
 import type { MoveInput } from "./types";
-import { esc, todayIso } from "./util";
+import { t } from "./i18n";
+import { icon, type IconName } from "./icons";
+import { stepper } from "./shell";
+import { addDays, esc, todayIso } from "./util";
+import { inputProblem, type InputProblem } from "./validate";
+
+const BENEFIT_ICONS: IconName[] = ["calendar", "drop", "leaf", "lock"];
+
+// Which field to mark when validation finds a problem.
+const PROBLEM_FIELD: Record<InputProblem, string> = {
+  date: "moveDate",
+  city: "city",
+  year: "buildingYear",
+  age: "washerAge",
+};
 
 export function renderForm(
   root: HTMLElement,
   initial: MoveInput | null,
   onSubmit: (input: MoveInput) => void,
 ): void {
-  const v = initial ?? {
-    moveDate: todayIso(),
+  const f = t().form;
+  const v: MoveInput = initial ?? {
+    // Two days ahead keeps the move inside FMI's forecast range, so the demo shows live weather.
+    moveDate: addDays(todayIso(), 2),
     city: "Turku",
     homeType: "house",
     buildingYear: 1985,
@@ -16,68 +32,127 @@ export function renderForm(
     knowsCover: "unsure",
   };
 
+  const radio = (name: string, value: string, checked: boolean) =>
+    `<input type="radio" name="${name}" value="${value}" ${checked ? "checked" : ""} />`;
+
   root.innerHTML = `
-    <section class="screen">
-      <p class="step">Step 1 of 3</p>
-      <h1 tabindex="-1">Moving soon? Tell us about the new home.</h1>
-      <p class="lead">Two minutes of answers give you a plan for the move and your first 30 days.</p>
+    <div class="page">
+      ${stepper(1)}
+      <div class="form-layout">
+        <section class="intro">
+          <p class="eyebrow">${esc(f.eyebrow)}</p>
+          <h1 tabindex="-1">${esc(f.title)}</h1>
+          <p class="lead">${esc(f.lead)}</p>
+          <h2 class="sr-only">${esc(f.benefitsTitle)}</h2>
+          <ul class="benefits">
+            ${f.benefits
+              .map(
+                (b, i) => `
+              <li>
+                <span class="benefit-icon">${icon(BENEFIT_ICONS[i] ?? "check")}</span>
+                <span><strong>${esc(b.title)}</strong><span>${esc(b.body)}</span></span>
+              </li>`,
+              )
+              .join("")}
+          </ul>
+        </section>
 
-      <form id="move-form" class="form" novalidate>
-        <label>Move date
-          <input type="date" name="moveDate" required value="${esc(v.moveDate)}" />
-        </label>
+        <form id="move-form" class="panel form" novalidate>
+          <fieldset class="group">
+            <legend>${esc(f.sectionMove)}</legend>
+            <div class="row">
+              <div class="field">
+                <label for="f-date">${esc(f.moveDate)}</label>
+                <input id="f-date" type="date" name="moveDate" required value="${esc(v.moveDate)}" />
+              </div>
+              <div class="field">
+                <label for="f-city">${esc(f.city)}</label>
+                <input id="f-city" type="text" name="city" required maxlength="40" autocomplete="address-level2"
+                       value="${esc(v.city)}" placeholder="${esc(f.cityPlaceholder)}" />
+              </div>
+            </div>
+          </fieldset>
 
-        <label>New city
-          <input type="text" name="city" required aria-describedby="form-error" maxlength="40" autocomplete="address-level2"
-                 value="${esc(v.city)}" placeholder="e.g. Turku" />
-        </label>
+          <fieldset class="group">
+            <legend>${esc(f.sectionHome)}</legend>
+            <fieldset class="field">
+              <legend class="label">${esc(f.homeType)}</legend>
+              <div class="tiles">
+                <label class="tile">
+                  ${radio("homeType", "apartment", v.homeType === "apartment")}
+                  <span class="tile-body">
+                    ${icon("building", "icon icon-lg")}
+                    <span><strong>${esc(f.apartment)}</strong><small>${esc(f.apartmentHint)}</small></span>
+                  </span>
+                </label>
+                <label class="tile">
+                  ${radio("homeType", "house", v.homeType === "house")}
+                  <span class="tile-body">
+                    ${icon("house", "icon icon-lg")}
+                    <span><strong>${esc(f.house)}</strong><small>${esc(f.houseHint)}</small></span>
+                  </span>
+                </label>
+              </div>
+            </fieldset>
+            <div class="field">
+              <label for="f-year">${esc(f.buildingYear)}</label>
+              <input id="f-year" type="number" name="buildingYear" inputmode="numeric" required min="1800" max="2030"
+                     aria-describedby="f-year-hint" value="${esc(v.buildingYear)}" />
+              <p class="hint" id="f-year-hint">${esc(f.buildingYearHint)}</p>
+            </div>
+          </fieldset>
 
-        <fieldset>
-          <legend>Home type</legend>
-          <div class="segmented">
-            <label><input type="radio" name="homeType" value="apartment" ${v.homeType === "apartment" ? "checked" : ""}/> Apartment</label>
-            <label><input type="radio" name="homeType" value="house" ${v.homeType === "house" ? "checked" : ""}/> Detached house</label>
-          </div>
-        </fieldset>
+          <fieldset class="group">
+            <legend>${esc(f.sectionAppliances)}</legend>
+            <div class="row">
+              <div class="field">
+                <label for="f-washer">${esc(f.washerAge)}</label>
+                <input id="f-washer" type="number" name="washerAge" inputmode="numeric" min="0" max="40"
+                       aria-describedby="age-hint" value="${v.washerAge ?? ""}" placeholder="${esc(f.agePlaceholder)}" />
+              </div>
+              <div class="field">
+                <label for="f-dishwasher">${esc(f.dishwasherAge)}</label>
+                <input id="f-dishwasher" type="number" name="dishwasherAge" inputmode="numeric" min="0" max="40"
+                       aria-describedby="age-hint" value="${v.dishwasherAge ?? ""}" placeholder="${esc(f.agePlaceholder)}" />
+              </div>
+            </div>
+            <p class="hint" id="age-hint">${esc(f.ageHint)}</p>
+          </fieldset>
 
-        <label>Year the building was built
-          <input type="number" name="buildingYear" required aria-describedby="form-error" min="1800" max="2030" value="${esc(v.buildingYear)}" />
-        </label>
+          <fieldset class="group">
+            <legend>${esc(f.sectionCover)}</legend>
+            <fieldset class="field">
+              <legend class="label">${esc(f.knowsCover)}</legend>
+              <div class="segmented">
+                <label>${radio("knowsCover", "yes", v.knowsCover === "yes")} ${esc(f.coverYes)}</label>
+                <label>${radio("knowsCover", "unsure", v.knowsCover === "unsure")} ${esc(f.coverUnsure)}</label>
+                <label>${radio("knowsCover", "no", v.knowsCover === "no")} ${esc(f.coverNo)}</label>
+              </div>
+            </fieldset>
+          </fieldset>
 
-        <div class="row">
-          <label>Washing machine age (years)
-            <input type="number" name="washerAge" aria-describedby="age-hint" min="0" max="40" value="${v.washerAge ?? ""}" placeholder="none" />
-          </label>
-          <label>Dishwasher age (years)
-            <input type="number" name="dishwasherAge" aria-describedby="age-hint" min="0" max="40" value="${v.dishwasherAge ?? ""}" placeholder="none" />
-          </label>
-        </div>
-        <p class="hint" id="age-hint">Leave empty if you don't have one.</p>
-
-        <fieldset>
-          <legend>Do you know what your home insurance covers during a move?</legend>
-          <div class="segmented">
-            <label><input type="radio" name="knowsCover" value="yes" ${v.knowsCover === "yes" ? "checked" : ""}/> Yes</label>
-            <label><input type="radio" name="knowsCover" value="unsure" ${v.knowsCover === "unsure" ? "checked" : ""}/> Not sure</label>
-            <label><input type="radio" name="knowsCover" value="no" ${v.knowsCover === "no" ? "checked" : ""}/> No</label>
-          </div>
-        </fieldset>
-
-        <p class="error" id="form-error" role="alert" tabindex="-1" hidden></p>
-        <button type="submit" class="primary">Build my move plan</button>
-        <p class="hint">Nothing you enter leaves this page except the city name, used for the weather forecast. No cookies, no tracking.</p>
-      </form>
-    </section>`;
+          <p class="error" id="form-error" role="alert" tabindex="-1" hidden></p>
+          <button type="submit" class="btn btn-primary btn-lg btn-block">${esc(f.submit)} ${icon("arrowRight")}</button>
+          <p class="hint privacy">${icon("lock", "icon icon-sm")}<span>${esc(f.privacy)}</span></p>
+        </form>
+      </div>
+    </div>`;
 
   const form = root.querySelector<HTMLFormElement>("#move-form")!;
   const errorEl = root.querySelector<HTMLParagraphElement>("#form-error")!;
+  const messages: Record<InputProblem, string> = {
+    date: f.errorDate,
+    city: f.errorCity,
+    year: f.errorYear,
+    age: f.errorAge,
+  };
 
   form.addEventListener("submit", (e) => {
     e.preventDefault();
     const data = new FormData(form);
     const optionalAge = (key: string) => {
       const raw = String(data.get(key) ?? "").trim();
-      return raw === "" ? null : Math.max(0, Math.round(Number(raw)));
+      return raw === "" ? null : Number(raw);
     };
 
     const input: MoveInput = {
@@ -90,21 +165,21 @@ export function renderForm(
       knowsCover: (data.get("knowsCover") as MoveInput["knowsCover"]) ?? "unsure",
     };
 
-    const problem = validate(input);
+    form.querySelectorAll("[aria-invalid]").forEach((el) => el.removeAttribute("aria-invalid"));
+    const problem = inputProblem(input);
     if (problem) {
-      errorEl.textContent = problem;
+      // An age problem points at the dishwasher field when the washing machine age is fine.
+      const field =
+        problem === "age" && inputProblem({ ...input, dishwasherAge: null }) === null
+          ? "dishwasherAge"
+          : PROBLEM_FIELD[problem];
+      form.querySelector(`[name="${field}"]`)?.setAttribute("aria-invalid", "true");
+      errorEl.textContent = messages[problem];
       errorEl.hidden = false;
       errorEl.focus();
       return;
     }
+    errorEl.hidden = true;
     onSubmit(input);
   });
-}
-
-function validate(input: MoveInput): string | null {
-  if (!input.moveDate) return "Pick a move date.";
-  if (!/^[\p{L} -]{2,40}$/u.test(input.city)) return "Enter the city name, for example Turku.";
-  if (!Number.isFinite(input.buildingYear) || input.buildingYear < 1800 || input.buildingYear > 2030)
-    return "Enter the building year, for example 1985.";
-  return null;
 }
