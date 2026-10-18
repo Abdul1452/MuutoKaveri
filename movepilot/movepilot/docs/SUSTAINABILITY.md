@@ -1,8 +1,8 @@
-# Sustainability assessment: MovePilot
+# Sustainability assessment: MuutoKaveri
 
 ## Summary
 
-MovePilot is a small prevention tool with a very light direct footprint. Its main sustainability value is indirect: helping people find leak and frost risks in a new home before they cause damage, since repairs mean new materials, drying equipment and building waste. The prototype already does well on privacy and accessibility by design. Version 0.2 adds Finnish and Swedish, which closes the biggest inclusion gap, though the translations still need a native-speaker check. It still has no measured evidence that it prevents any damage. The leak sensor offer brings hardware, and so e-waste, into an otherwise digital service.
+MuutoKaveri is a small prevention tool with a very light direct footprint. Its main sustainability value is indirect: helping people find leak and frost risks in a new home before they cause damage, since repairs mean new materials, drying equipment and building waste. The prototype already does well on privacy and accessibility by design. Version 0.2 adds Finnish and Swedish, which closes the biggest inclusion gap, though the translations still need a native-speaker check. It still has no measured evidence that it prevents any damage. The leak sensor offer brings hardware, and so e-waste, into an otherwise digital service.
 
 | Dimension | Score (1–5) | Confidence |
 |---|---|---|
@@ -31,8 +31,8 @@ The business case for prevention rests on the size of leak damage. In 2021 Finni
 
 ### Ecological
 
-**Direct footprint.** The first visit transfers about 24 kB compressed: 18 kB of JavaScript, 5 kB of CSS and under 1 kB of HTML, plus a forecast response under 1 kB. Finnish and Swedish texts (about 7 kB each) load only for people who choose them. `npm run budget` fails the build above 50 kB. The median web page in 2024 was 2.3 MB on mobile and 2.6 MB on desktop (HTTP Archive). This follows Ympäristö OK Web 2 (lightweight front end) and Web 5 (few browser dependencies): the browser loads no third-party libraries.
-- There is no tracking, no media and no fonts to download (Web 1, Web 4).
+**Direct footprint.** The first visit transfers about 58 kB compressed: 23 kB of JavaScript, 7 kB of CSS, under 1 kB of HTML and a 28 kB font, plus a forecast response under 1 kB. Finnish and Swedish texts (about 8 kB each) load only for people who choose them. `npm run budget` fails the build above 60 kB. The median web page in 2024 was 2.3 MB on mobile and 2.6 MB on desktop (HTTP Archive). This follows Ympäristö OK Web 2 (lightweight front end) and Web 5 (few browser dependencies): the browser loads no third-party libraries.
+- There is no tracking and no photos (Web 1). The one web font (Source Sans 3) is self-hosted, loads only its Latin subset and is cached for a year, so returning visits don't download it again (Web 4). It is the largest single file: dropping it for the system font would bring the first visit back to about 30 kB, a trade-off for readability and a calmer, more consistent look.
 - The server caches each city's forecast for 30 minutes, so repeat visits don't call FMI again. This follows Motiva's cache criterion and Web 3.
 - Build files are cached by the browser for a year.
 - There is no AI, so no inference energy.
@@ -61,14 +61,14 @@ The rules sit in one readable file (`src/rules.ts`), each with its source. The c
 
 ## 4. Legal and regulatory fit
 
-| Law | What it requires | MovePilot today | Gap |
+| Law | What it requires | MuutoKaveri today | Gap |
 |---|---|---|---|
 | GDPR (EU 2016/679) and Data Protection Act 1050/2018 | Data minimisation, storage limitation, data protection by design (Art. 5, 25), and telling people what is processed (Art. 13) | No accounts. Device storage only after opt-in. A privacy notice is in the footer, and the server does not log city names. | Hosting logs keep IP addresses, which are personal data (CJEU C-582/14). Set short log retention and mention it in the notice. |
 | Act on Electronic Communications Services 917/2014, section 205 (cookies) | Consent before storing or reading data on the user's device, unless strictly necessary | No cookies. Local storage and the offline cache are used only after the user turns on "Save on this device", and turning it off deletes them, so no consent banner is needed | None |
 | European Accessibility Act (2019/882) and Act on the Provision of Digital Services 306/2019 | EN 301 549, in practice WCAG 2.1 A and AA. If's own accessibility statement says the Act covers its statutory insurance tasks and, since 28 June 2025, consumer e-commerce. | No automated WCAG 2.1 AA violations. Keyboard and screen-reader support built in. | Manual testing with a screen reader and an accessibility statement before production |
 | Insurance Distribution Directive (2016/97) and Act on Insurance Distribution 234/2018 | Rules for advising on or proposing insurance contracts | General checklist only, with no product comparison or recommendation | If If runs it, If's compliance should review the cover-check wording and the link to the move notice |
 | Consumer Protection Act 38/1978, chapter 2 | Marketing must be recognisable as marketing and show who is behind it | The sensor offer is labelled "Offer concept" | In production, label it as If's offer |
-| EU AI Act (2024/1689) | Duties for AI systems | Not applicable, because MovePilot uses no AI | None |
+| EU AI Act (2024/1689) | Duties for AI systems | Not applicable, because MuutoKaveri uses no AI | None |
 | FMI licence, CC BY 4.0 | Attribution | Credited on weather cards and in the footer | None |
 
 ## 5. Critical challenges, root causes and interdependencies
@@ -98,7 +98,7 @@ The main conflict is between If's interest in personalised offers and data, and 
 
 | Dimension | Score | Evidence | Confidence |
 |---|---|---|---|
-| Ecological | 3.5 | About 24 kB first visit with a 50 kB budget in the build; forecast caching; no AI or database. Enabling value is unmeasured, and the sensor offer brings hardware. | Medium |
+| Ecological | 3.5 | About 58 kB first visit (28 kB of it a self-hosted font) with a 60 kB budget in the build; forecast caching; no AI or database. Enabling value is unmeasured, and the sensor offer brings hardware. | Medium |
 | Social | 3 | Privacy and WCAG 2.1 AA by design (Lighthouse accessibility 100). English, Finnish and Swedish; translations not yet checked by native speakers. Digital-first, with a printable plan. | Medium |
 | Economic | 3.5 | Large leak claim costs; very low running cost. Effect not measured. | Low |
 | Technical | 4 | One readable rules file with sources; few dependencies; open licence and API | High |

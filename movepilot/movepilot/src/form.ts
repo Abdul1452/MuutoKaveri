@@ -7,6 +7,17 @@ import { inputProblem, type InputProblem } from "./validate";
 
 const BENEFIT_ICONS: IconName[] = ["calendar", "drop", "leaf", "lock"];
 
+// Decorative line drawing for the visual panel: boxes and a home. Inline SVG instead of a photo,
+// so the page stays light (a hero photo is often 100–300 kB).
+const MOVING_ART = `<svg class="hero-art" viewBox="0 0 240 150" aria-hidden="true" focusable="false">
+  <g fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M128 62 172 28l44 34v70h-88z"/><path d="M160 132v-30h24v30M140 74h16v14h-16zM188 74h16v14h-16z"/>
+    <path d="M20 96h50v36H20zM20 96l8-12h50l-8 12M70 96l8-12v36l-8 12M38 96v10M52 96v10"/>
+    <path d="M58 62h40v34H58zM58 62l6-10h40l-6 10M98 62l6-10v34l-6 10"/>
+    <path d="M8 132h224"/>
+  </g>
+</svg>`;
+
 // Which field to mark when validation finds a problem.
 const PROBLEM_FIELD: Record<InputProblem, string> = {
   date: "moveDate",
@@ -15,12 +26,21 @@ const PROBLEM_FIELD: Record<InputProblem, string> = {
   age: "washerAge",
 };
 
+export interface FormOptions {
+  /** Show the invitation to the first-time user tour. */
+  tourBanner: boolean;
+  onStartTour: () => void;
+  onDismissTour: () => void;
+}
+
 export function renderForm(
   root: HTMLElement,
   initial: MoveInput | null,
   onSubmit: (input: MoveInput) => void,
+  opts: FormOptions,
 ): void {
   const f = t().form;
+  const tour = t().tour;
   const v: MoveInput = initial ?? {
     // Two days ahead keeps the move inside FMI's forecast range, so the demo shows live weather.
     moveDate: addDays(todayIso(), 2),
@@ -35,29 +55,34 @@ export function renderForm(
   const radio = (name: string, value: string, checked: boolean) =>
     `<input type="radio" name="${name}" value="${value}" ${checked ? "checked" : ""} />`;
 
+  // Layout follows the product pages of large Finnish insurers: a plain heading and lead,
+  // one split box (form panel + visual panel), then full-width bands for reasons and questions.
   root.innerHTML = `
     <div class="page">
       ${stepper(1)}
-      <div class="form-layout">
-        <section class="intro">
-          <p class="eyebrow">${esc(f.eyebrow)}</p>
-          <h1 tabindex="-1">${esc(f.title)}</h1>
-          <p class="lead">${esc(f.lead)}</p>
-          <h2 class="sr-only">${esc(f.benefitsTitle)}</h2>
-          <ul class="benefits">
-            ${f.benefits
-              .map(
-                (b, i) => `
-              <li>
-                <span class="benefit-icon">${icon(BENEFIT_ICONS[i] ?? "check")}</span>
-                <span><strong>${esc(b.title)}</strong><span>${esc(b.body)}</span></span>
-              </li>`,
-              )
-              .join("")}
-          </ul>
-        </section>
+      <header class="page-head">
+        <h1 tabindex="-1">${esc(f.title)}</h1>
+        <p class="lead">${esc(f.lead)}</p>
+      </header>
+      ${
+        opts.tourBanner
+          ? `<aside class="infobox tour-banner" aria-labelledby="tour-banner-title">
+              ${icon("help", "icon infobox-icon")}
+              <div>
+                <h2 id="tour-banner-title">${esc(tour.bannerTitle)}</h2>
+                <p>${esc(tour.bannerBody)}</p>
+              </div>
+              <div class="infobox-actions">
+                <button type="button" class="btn btn-primary btn-sm" id="tour-start">${esc(tour.bannerStart)}</button>
+                <button type="button" class="btn-link" id="tour-dismiss">${esc(tour.bannerDismiss)}</button>
+              </div>
+            </aside>`
+          : ""
+      }
 
-        <form id="move-form" class="panel form" novalidate>
+      <div class="hero-split">
+        <form id="move-form" class="hero-form form" novalidate>
+          <h2 class="panel-title">${esc(f.eyebrow)}</h2>
           <fieldset class="group">
             <legend>${esc(f.sectionMove)}</legend>
             <div class="row">
@@ -135,8 +160,55 @@ export function renderForm(
           <button type="submit" class="btn btn-primary btn-lg btn-block">${esc(f.submit)} ${icon("arrowRight")}</button>
           <p class="hint privacy">${icon("lock", "icon icon-sm")}<span>${esc(f.privacy)}</span></p>
         </form>
+
+        <div class="hero-visual">
+          <p class="badge-circle"><strong>${esc(f.badgeValue)}</strong><span>${esc(f.badgeLabel)}</span></p>
+          <ul class="visual-points">
+            ${f.visualPoints.map((point) => `<li>${icon("check", "icon icon-sm")}<span>${esc(point)}</span></li>`).join("")}
+          </ul>
+          ${MOVING_ART}
+        </div>
       </div>
-    </div>`;
+    </div>
+
+    <section class="band band-alt" aria-labelledby="why-title">
+      <div class="page">
+        <p class="eyebrow-quiet">${esc(f.whyEyebrow)}</p>
+        <h2 id="why-title" class="h-section">${esc(f.whyTitle)}</h2>
+        <ul class="feature-grid">
+          ${f.benefits
+            .map(
+              (b, i) => `
+            <li class="feature-card">
+              ${icon(BENEFIT_ICONS[i] ?? "check", "icon icon-xl")}
+              <h3>${esc(b.title)}</h3>
+              <p>${esc(b.body)}</p>
+            </li>`,
+            )
+            .join("")}
+        </ul>
+      </div>
+    </section>
+
+    <section class="band" aria-labelledby="faq-title">
+      <div class="page">
+        <h2 id="faq-title" class="h-section">${esc(f.faqTitle)}</h2>
+        <div class="faq">
+          ${f.faq
+            .map(
+              (item) => `
+            <details>
+              <summary>${esc(item.q)}${icon("chevronDown", "icon faq-chevron")}</summary>
+              <p>${esc(item.a)}</p>
+            </details>`,
+            )
+            .join("")}
+        </div>
+      </div>
+    </section>`;
+
+  root.querySelector("#tour-start")?.addEventListener("click", opts.onStartTour);
+  root.querySelector("#tour-dismiss")?.addEventListener("click", opts.onDismissTour);
 
   const form = root.querySelector<HTMLFormElement>("#move-form")!;
   const errorEl = root.querySelector<HTMLParagraphElement>("#form-error")!;

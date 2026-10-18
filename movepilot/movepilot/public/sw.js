@@ -1,15 +1,21 @@
-// MovePilot service worker: lets the plan open offline on moving day, before the new home has internet.
+// MuutoKaveri service worker: lets the plan open offline on moving day, before the new home has internet.
 // It is registered only after the user turns on "Save on this device", and removed when they turn it off.
 //
-// Consent: the page creates the CONSENT cache when saving is turned on and deletes every movepilot cache
+// Consent: the page creates the CONSENT cache when saving is turned on and deletes every muutokaveri cache
 // when it is turned off. Before writing anything the worker checks that CONSENT still exists, so a worker
 // that keeps controlling an open tab after being unregistered can't store data again.
-const CACHE = "movepilot-v1";
-const CONSENT = "movepilot-consent";
+const CACHE = "muutokaveri-v2"; // bump when the cached files change shape (v2: renamed app)
+const CONSENT = "muutokaveri-consent";
 const SHELL = ["/", "/manifest.webmanifest", "/icon.svg"];
 const NETWORK_TIMEOUT_MS = 4000; // shorter than the page's own 10 s timeout, so the cached copy is used in time
 
 const allowed = () => caches.has(CONSENT);
+
+/** Looks only in this version's cache (never an old one), without creating it. */
+async function cached(request) {
+  if (!(await caches.has(CACHE))) return undefined;
+  return (await caches.open(CACHE)).match(request);
+}
 
 async function store(key, response) {
   if (!(await allowed())) return;
@@ -29,7 +35,12 @@ self.addEventListener("activate", (event) => {
     caches
       .keys()
       .then((keys) =>
-        Promise.all(keys.filter((k) => k.startsWith("movepilot") && k !== CACHE && k !== CONSENT).map((k) => caches.delete(k))),
+        // Older caches, including the "movepilot-*" ones from before the app was renamed.
+        Promise.all(
+          keys
+            .filter((k) => (k.startsWith("muutokaveri") || k.startsWith("movepilot")) && k !== CACHE && k !== CONSENT)
+            .map((k) => caches.delete(k)),
+        ),
       )
       .then(() => self.clients.claim()),
   );
@@ -81,7 +92,7 @@ self.addEventListener("fetch", (event) => {
 });
 
 async function cacheFirst(request) {
-  const hit = await caches.match(request);
+  const hit = await cached(request);
   if (hit) return hit;
   const response = await fetch(request);
   if (response.ok) await store(request, response.clone());
@@ -94,7 +105,7 @@ async function networkFirst(request, key, fromCache = (r) => r) {
     if (response.ok) await store(key, response.clone());
     return response;
   } catch (err) {
-    const hit = await caches.match(key);
+    const hit = await cached(key);
     if (hit) return fromCache(hit);
     throw err;
   }

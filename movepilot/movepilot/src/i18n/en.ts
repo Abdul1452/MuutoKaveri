@@ -7,7 +7,7 @@
 // - Keep facts and figures exactly as in English; each one has a source on the card.
 
 export const en = {
-  htmlTitle: "MovePilot – plan your move",
+  htmlTitle: "MuutoKaveri – plan your move",
   metaDescription:
     "A moving companion that turns your move date into a personal plan for the move and your first 30 days.",
 
@@ -15,6 +15,11 @@ export const en = {
     skip: "Skip to content",
     tagline: "Your moving companion",
     language: "Language",
+    mainNav: "Tools",
+    menu: "Menu",
+    tour: "Tour",
+    insurance: "Update insurance",
+    navLocked: "Build your plan first",
   },
 
   steps: {
@@ -64,6 +69,115 @@ export const en = {
       { title: "A greener move", body: "Fewer boxes and trips, less waste, lower heating energy in the new home." },
       { title: "Private by design", body: "No account and no tracking. Works in English, Finnish and Swedish." },
     ],
+    badgeValue: "2 min",
+    badgeLabel: "to your moving plan",
+    visualPoints: ["Leak, frost and insurance checks", "A date for every task", "Works offline on moving day"],
+    whyEyebrow: "Why MuutoKaveri",
+    whyTitle: "Everything for the move in one plan",
+    faqTitle: "Common questions",
+    faq: [
+      {
+        q: "Is MuutoKaveri free, and do I need an account?",
+        a: "It's free and there is no account. Answer six questions and your plan is ready.",
+      },
+      {
+        q: "What happens to my answers?",
+        a: "They stay in this browser tab. Only the city name goes to our server for the weather forecast. If you turn on “Save on this device”, the plan is kept on your device until you turn it off.",
+      },
+      {
+        q: "Does the plan replace my insurance terms?",
+        a: "No. The plan gives general advice. Your own policy decides what is covered, so the plan tells you what to check and links to your insurer's move notice.",
+      },
+      {
+        q: "Can I use it on my phone on moving day?",
+        a: "Yes. Turn on “Save on this device” and the plan opens even before the new home has internet. You can also print it or add the tasks to your calendar.",
+      },
+    ],
+  },
+
+  tour: {
+    bannerTitle: "New to MuutoKaveri?",
+    bannerBody: "Take a one-minute tour of the tools, from your answers to a finished plan.",
+    bannerStart: "Start the tour",
+    bannerDismiss: "No thanks",
+    label: "Guided tour",
+    stepOf: (n: number, total: number) => `Step ${n} of ${total}`,
+    back: "Back",
+    next: "Next",
+    skip: "Skip tour",
+    finish: "Finish",
+    buildPlan: "Build the plan",
+    openSummary: "Open the summary",
+    steps: {
+      welcome: {
+        title: "Welcome to MuutoKaveri",
+        body: "This tour shows each tool, from your answers to the finished plan. It takes about a minute. Press Esc to leave at any time.",
+      },
+      language: {
+        title: "Choose your language",
+        body: "Switch between English, Finnish and Swedish whenever you like. Your answers stay as they are.",
+      },
+      nav: {
+        title: "Move between the tools",
+        body: "Your move, your plan and the ready screen. The plan and the summary open once you have built a plan.",
+      },
+      form: {
+        title: "Tell us about the move",
+        body: "Six quick answers: the date, the city, the home, its building year, your appliances and your insurance.",
+      },
+      submit: {
+        title: "Build your plan",
+        body: "“Build the plan” makes a plan from the answers in the form. You can change them later.",
+      },
+      progress: {
+        title: "Follow your progress",
+        body: "See how many tasks are done, how many important ones are still open and how many days are left.",
+      },
+      forecast: {
+        title: "Weather around your move",
+        body: "The forecast for the days around the move. Frost, strong wind and heavy rain add a task to the plan.",
+      },
+      filters: {
+        title: "Filter by topic",
+        body: "Show only leak risks, insurance, weather, sustainable choices, admin or safety.",
+      },
+      card: {
+        title: "Tick off tasks",
+        body: "Each task has a date. Tick it when it's done. Important tasks have a violet edge, and links lead to the service and to the source of each fact.",
+      },
+      tools: {
+        title: "Calendar and print",
+        body: "Add the open tasks to your phone calendar, or print the plan as a checklist for moving day.",
+      },
+      remember: {
+        title: "Save on this device",
+        body: "Off by default. Turn it on to keep your plan and use it offline on moving day. Turning it off deletes everything.",
+      },
+      next: {
+        title: "On to the summary",
+        body: "When the plan looks right, the summary shows what is still open and the last steps.",
+      },
+      open: {
+        title: "What's still open",
+        body: "The important tasks you haven't ticked yet, so nothing big is forgotten.",
+      },
+      cta: {
+        title: "Update your home insurance",
+        body: "One link to your insurer's move notice, so the new home is covered from the first night.",
+      },
+      notes: {
+        title: "Your home's key facts",
+        body: "Write down where the water shut-off and the fuse box are, the maintenance number and the meter readings.",
+      },
+      emergency: {
+        title: "If water leaks",
+        body: "Four steps to follow straight away. They are on the printout too.",
+      },
+      done: {
+        title: "You're ready",
+        body: "That's every tool. You can take the tour again from the Tour button at the top of the page.",
+      },
+    },
   },
 
   loading: {
@@ -186,12 +300,12 @@ export const en = {
     summary: "Privacy, accessibility and sources",
     privacyTitle: "Privacy",
     privacy:
-      "MovePilot has no accounts, cookies, analytics or tracking. By default your answers stay in this browser tab and disappear when you close it. Only the city name is sent to our server. The server passes it to the Finnish Meteorological Institute to get the forecast and keeps that city's forecast in memory for 30 minutes. The name is not logged or linked to you.",
+      "MuutoKaveri has no accounts, cookies, analytics or tracking. By default your answers stay in this browser tab and disappear when you close it. Only the city name is sent to our server. The server passes it to the Finnish Meteorological Institute to get the forecast and keeps that city's forecast in memory for 30 minutes. The name is not logged or linked to you.",
     privacySaved:
       "If you turn on “Save on this device”, your answers, ticks and notes are kept in this browser's local storage and the app is cached for offline use. Nothing is sent anywhere. Turning it off deletes all of it.",
     accessibilityTitle: "Accessibility",
     accessibility:
-      "MovePilot is built to meet WCAG 2.1 level AA: it works with a keyboard and screen readers, colours meet contrast requirements, and it follows your light or dark mode setting. Found a problem? Open an issue in the project repository.",
+      "MuutoKaveri is built to meet WCAG 2.1 level AA: it works with a keyboard and screen readers, colours meet contrast requirements, and it follows your light or dark mode setting. Found a problem? Open an issue in the project repository.",
     sourcesTitle: "Sources",
     sourceItems: [
       { topic: "Movers' insurance knowledge", label: "If survey, MTV Uutiset", href: "https://www.mtvuutiset.fi/artikkeli/tata-moni-ei-tieda-korvaako-kotivakuutus-muutoissa-sattuvat-vahingot/4737448" },

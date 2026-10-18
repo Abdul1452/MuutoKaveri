@@ -11,7 +11,7 @@ Each figure in the pitch with the source line to show under it. Use the short fo
 | Almost 70% of leaks happen in houses built in the 1980s or earlier | Pohjola, Verkkouutiset 2021 | Single insurer |
 | Average detached-house leak claim of about €8,500 | Pohjola, Verkkouutiset 2024 | Single insurer |
 | If's retention target is 89% or more of about 3.7M Nordic households | Sampo investor relations | Nordic, not Finland only |
-| A first MovePilot visit is about 24 kB; the median web page is 2.3 MB | Our build; HTTP Archive Web Almanac 2024 | Measured with `npm run budget` |
+| A first MuutoKaveri visit is about 58 kB, font included; the median web page is 2.3 MB | Our build; HTTP Archive Web Almanac 2024 | Measured with `npm run budget` |
 | Lighthouse accessibility score 100 | Lighthouse (axe-core), form and plan screens, production build | Automated check only |
 
 ## Sources slide

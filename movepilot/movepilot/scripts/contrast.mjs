@@ -20,6 +20,8 @@ const PAIRS = [
   ["amber", "amber-soft", 4.5], ["slate", "slate-soft", 4.5],
   ["control", "surface", 3], ["violet", "surface", 3], ["fill", "track", 3], ["focus", "mist", 3], ["focus", "surface", 3],
   ["focus-on-violet", "violet", 3], ["focus-on-violet", "violet-deep", 3],
+  ["ink", "mist-2", 4.5], ["muted", "mist-2", 4.5], ["violet-text", "mist-2", 4.5],
+  ["ink", "mist-3", 4.5], ["muted", "mist-3", 4.5], ["on-violet", "violet", 4.5],
 ];
 
 const lum = (hex) => {

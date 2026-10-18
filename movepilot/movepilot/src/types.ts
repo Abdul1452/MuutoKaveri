@@ -3,6 +3,7 @@ export type CoverKnowledge = "yes" | "no" | "unsure";
 export type Phase = "before" | "moving-day" | "first-30";
 export type Tag = "insurance" | "leak" | "weather" | "admin" | "safety" | "green";
 export type Lang = "en" | "fi" | "sv";
+export type Screen = "form" | "loading" | "plan" | "summary";
 
 export interface MoveInput {
   moveDate: string; // YYYY-MM-DD

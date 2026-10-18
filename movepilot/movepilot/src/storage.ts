@@ -4,8 +4,10 @@ import type { HomeNotes, Lang, MoveInput } from "./types";
 import { isLang } from "./i18n";
 import { isMoveInput } from "./validate";
 
-const KEY = "movepilot:v1";
-const CACHE_PREFIX = "movepilot";
+const KEY = "muutokaveri:v1";
+// The app was called MovePilot before; its saved plan is moved to the new key on first load.
+const OLD_KEY = "movepilot:v1";
+const CACHE_PREFIXES = ["muutokaveri", "movepilot"];
 const NOTE_MAX = 120;
 
 export interface Saved {
@@ -13,6 +15,7 @@ export interface Saved {
   done: string[];
   notes: HomeNotes;
   lang: Lang;
+  tourSeen: boolean;
 }
 
 export const emptyNotes = (): HomeNotes => ({
@@ -25,7 +28,11 @@ export const emptyNotes = (): HomeNotes => ({
 
 export function loadSaved(): Saved | null {
   try {
-    const raw = localStorage.getItem(KEY);
+    let raw = localStorage.getItem(KEY);
+    if (!raw && (raw = localStorage.getItem(OLD_KEY))) {
+      localStorage.setItem(KEY, raw);
+      localStorage.removeItem(OLD_KEY);
+    }
     if (!raw) return null;
     const data = JSON.parse(raw);
     if (data?.v !== 1 || !isMoveInput(data.input)) return null;
@@ -34,6 +41,7 @@ export function loadSaved(): Saved | null {
       done: Array.isArray(data.done) ? data.done.filter((id: unknown) => typeof id === "string") : [],
       notes: cleanNotes(data.notes),
       lang: isLang(data.lang) ? data.lang : "en",
+      tourSeen: data.tourSeen === true,
     };
   } catch {
     return null; // storage blocked or corrupt: start fresh
@@ -51,6 +59,7 @@ export function save(saved: Saved): void {
 export async function forget(): Promise<void> {
   try {
     localStorage.removeItem(KEY);
+    localStorage.removeItem(OLD_KEY);
   } catch {
     // nothing stored
   }
@@ -72,7 +81,7 @@ export function cleanNotes(value: unknown): HomeNotes {
 // on moving day before the new home has internet. Only in production builds, and only when saving is on.
 // The worker writes only while the CONSENT cache exists (see public/sw.js), so deleting the caches
 // stops it even if it keeps controlling this tab after it has been unregistered.
-const CONSENT = "movepilot-consent";
+const CONSENT = "muutokaveri-consent";
 let offlineWanted = false;
 let enabling: Promise<void> | null = null;
 
@@ -102,7 +111,7 @@ export function enableOffline(): Promise<void> {
 async function deleteCaches(): Promise<void> {
   if (!("caches" in window)) return;
   const keys = await caches.keys();
-  await Promise.all(keys.filter((k) => k.startsWith(CACHE_PREFIX)).map((k) => caches.delete(k)));
+  await Promise.all(keys.filter((k) => CACHE_PREFIXES.some((p) => k.startsWith(p))).map((k) => caches.delete(k)));
 }
 
 async function disableOffline(): Promise<void> {

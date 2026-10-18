@@ -70,7 +70,7 @@ export function renderPlan(root: HTMLElement, view: PlanView, actions: PlanActio
 
       <header class="plan-hero">
         <div class="plan-hero-text">
-          <p class="chip chip-on-dark">${icon("clock", "icon icon-sm")} ${esc(p.countdown(days))} · ${esc(formatDate(input.moveDate, locale()))}</p>
+          <p class="chip">${icon("clock", "icon icon-sm")} ${esc(p.countdown(days))} · ${esc(formatDate(input.moveDate, locale()))}</p>
           <h1 tabindex="-1">${esc(p.title(input.city))}</h1>
           <p class="lead">${esc(p.lead(cards.length, high))} ${esc(forecastNote(view.forecast))}</p>
         </div>

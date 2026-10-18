@@ -10,7 +10,7 @@ export function buildIcs(cards: Card[], calendarName: string, now: Date = new Da
   const lines = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
-    "PRODID:-//MovePilot//Move plan//EN",
+    "PRODID:-//MuutoKaveri//Move plan//EN",
     "CALSCALE:GREGORIAN",
     "METHOD:PUBLISH",
     `X-WR-CALNAME:${text(calendarName)}`,
@@ -28,7 +28,7 @@ export function buildIcs(cards: Card[], calendarName: string, now: Date = new Da
     lines.push(
       "BEGIN:VEVENT",
       // Stable per task, so importing an updated plan replaces events instead of duplicating them.
-      `UID:${card.id}@movepilot`,
+      `UID:${card.id}@muutokaveri`,
       `DTSTAMP:${stamp}`,
       `DTSTART;VALUE=DATE:${compact(card.due)}`,
       `DTEND;VALUE=DATE:${compact(addDays(card.due, 1))}`,

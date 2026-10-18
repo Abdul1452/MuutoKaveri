@@ -2,7 +2,7 @@
 import type { Messages } from "./en";
 
 export const sv: Messages = {
-  htmlTitle: "MovePilot – planera din flytt",
+  htmlTitle: "MuutoKaveri – planera din flytt",
   metaDescription:
     "Ett stöd vid flytten som gör om ditt flyttdatum till en personlig plan för flytten och dina första 30 dagar.",
 
@@ -10,6 +10,11 @@ export const sv: Messages = {
     skip: "Hoppa till innehållet",
     tagline: "Ditt stöd vid flytten",
     language: "Språk",
+    mainNav: "Verktyg",
+    menu: "Meny",
+    tour: "Rundtur",
+    insurance: "Uppdatera försäkringen",
+    navLocked: "Skapa din plan först",
   },
 
   steps: {
@@ -59,6 +64,115 @@ export const sv: Messages = {
       { title: "En grönare flytt", body: "Färre lådor och resor, mindre avfall och mindre energi för uppvärmning i det nya hemmet." },
       { title: "Inbyggt integritetsskydd", body: "Inget konto och ingen spårning. Fungerar på engelska, finska och svenska." },
     ],
+    badgeValue: "2 min",
+    badgeLabel: "till din flyttplan",
+    visualPoints: ["Kontroll av läckage, frost och försäkring", "Ett datum för varje uppgift", "Fungerar utan internet på flyttdagen"],
+    whyEyebrow: "Varför MuutoKaveri",
+    whyTitle: "Allt för flytten i en plan",
+    faqTitle: "Vanliga frågor",
+    faq: [
+      {
+        q: "Är MuutoKaveri gratis, och behöver jag ett konto?",
+        a: "Den är gratis och du behöver inget konto. Svara på sex frågor, så är din plan klar.",
+      },
+      {
+        q: "Vad händer med mina svar?",
+        a: "De stannar i den här webbläsarfliken. Bara ortens namn skickas till vår server för väderprognosen. Om du slår på ”Spara på den här enheten” sparas planen på din enhet tills du stänger av funktionen.",
+      },
+      {
+        q: "Ersätter planen villkoren i min försäkring?",
+        a: "Nej. Planen ger allmänna råd. Det är din egen försäkring som avgör vad som ersätts, så planen berättar vad du ska kontrollera och länkar till flyttanmälan hos ditt försäkringsbolag.",
+      },
+      {
+        q: "Kan jag använda den i telefonen på flyttdagen?",
+        a: "Ja. Slå på ”Spara på den här enheten”, så öppnas planen även innan det nya hemmet har internet. Du kan också skriva ut planen eller lägga till uppgifterna i din kalender.",
+      },
+    ],
+  },
+
+  tour: {
+    bannerTitle: "Första gången du använder MuutoKaveri?",
+    bannerBody: "Gå en rundtur på en minut genom verktygen, från dina svar till en färdig plan.",
+    bannerStart: "Starta rundturen",
+    bannerDismiss: "Nej tack",
+    label: "Guidad rundtur",
+    stepOf: (n: number, total: number) => `Steg ${n} av ${total}`,
+    back: "Tillbaka",
+    next: "Nästa",
+    skip: "Hoppa över rundturen",
+    finish: "Klar",
+    buildPlan: "Skapa planen",
+    openSummary: "Öppna sammanfattningen",
+    steps: {
+      welcome: {
+        title: "Välkommen till MuutoKaveri",
+        body: "Rundturen visar alla verktyg, från dina svar till den färdiga planen. Den tar ungefär en minut. Du kan avsluta när som helst med Esc.",
+      },
+      language: {
+        title: "Välj språk",
+        body: "Byt mellan engelska, finska och svenska när du vill. Dina svar finns kvar som de är.",
+      },
+      nav: {
+        title: "Gå mellan verktygen",
+        body: "Din flytt, din plan och skärmen Klart. Planen och sammanfattningen kan du öppna när du har skapat en plan.",
+      },
+      form: {
+        title: "Berätta om flytten",
+        body: "Sex snabba svar: datum, ort, bostad, byggnadsår, hushållsmaskiner och försäkring.",
+      },
+      submit: {
+        title: "Skapa din plan",
+        body: "När du trycker på ”Skapa planen” skapas en plan utifrån dina svar i formuläret. Du kan ändra svaren senare.",
+      },
+      progress: {
+        title: "Följ dina framsteg",
+        body: "Se hur många uppgifter som är klara, hur många viktiga uppgifter som är kvar och hur många dagar som återstår.",
+      },
+      forecast: {
+        title: "Vädret kring flytten",
+        body: "Prognosen för dagarna kring flytten. Vid frost, hård vind eller kraftigt regn får planen en extra uppgift.",
+      },
+      filters: {
+        title: "Filtrera efter ämne",
+        body: "Visa bara läckagerisk, försäkring, väder, hållbara val, ärenden eller säkerhet.",
+      },
+      card: {
+        title: "Bocka av uppgifter",
+        body: "Varje uppgift har ett datum. Bocka av den när den är klar. Viktiga uppgifter har en lila kant, och länkarna leder till tjänsten och till källan för varje faktauppgift.",
+      },
+      tools: {
+        title: "Kalender och utskrift",
+        body: "Lägg till de återstående uppgifterna i telefonens kalender, eller skriv ut planen som en checklista för flyttdagen.",
+      },
+      remember: {
+        title: "Spara på den här enheten",
+        body: "Avstängt som standard. Slå på funktionen för att spara planen och använda den utan internetförbindelse på flyttdagen. När du stänger av den raderas allt.",
+      },
+      next: {
+        title: "Vidare till sammanfattningen",
+        body: "När planen ser bra ut visar sammanfattningen vad som återstår och de sista stegen.",
+      },
+      open: {
+        title: "Det här återstår",
+        body: "De viktiga uppgifter som du inte har bockat av ännu, så att inget stort glöms bort.",
+      },
+      cta: {
+        title: "Uppdatera din hemförsäkring",
+        body: "En länk till flyttanmälan hos ditt försäkringsbolag, så att det nya hemmet är försäkrat från första natten.",
+      },
+      notes: {
+        title: "Viktig information om ditt hem",
+        body: "Skriv ner var huvudkranen för vattnet och proppskåpet finns, telefonnumret till fastighetsskötseln och mätarställningarna.",
+      },
+      emergency: {
+        title: "Om det läcker vatten",
+        body: "Fyra steg att följa genast. De finns också på utskriften.",
+      },
+      done: {
+        title: "Nu är du redo",
+        body: "Det var alla verktyg. Du kan gå rundturen igen med knappen Rundtur högst upp på sidan.",
+      },
+    },
   },
 
   loading: {
@@ -187,12 +301,12 @@ export const sv: Messages = {
     summary: "Dataskydd, tillgänglighet och källor",
     privacyTitle: "Dataskydd",
     privacy:
-      "MovePilot har inga konton, kakor, analysverktyg eller spårning. Som standard stannar dina svar i den här webbläsarfliken och försvinner när du stänger den. Bara ortens namn skickas till vår server. Servern skickar det vidare till Meteorologiska institutet för att hämta väderprognosen och håller ortens prognos i minnet i 30 minuter. Namnet loggas inte och kopplas inte till dig.",
+      "MuutoKaveri har inga konton, kakor, analysverktyg eller spårning. Som standard stannar dina svar i den här webbläsarfliken och försvinner när du stänger den. Bara ortens namn skickas till vår server. Servern skickar det vidare till Meteorologiska institutet för att hämta väderprognosen och håller ortens prognos i minnet i 30 minuter. Namnet loggas inte och kopplas inte till dig.",
     privacySaved:
       "Om du slår på ”Spara på den här enheten” sparas dina svar, markeringar och anteckningar i webbläsarens lokala lagring, och appen sparas i cacheminnet så att den fungerar utan internetförbindelse. Inget skickas någonstans. När du stänger av funktionen raderas allt.",
     accessibilityTitle: "Tillgänglighet",
     accessibility:
-      "MovePilot är byggd för att uppfylla WCAG 2.1 på nivå AA: den fungerar med tangentbord och skärmläsare, färgerna uppfyller kontrastkraven och den följer din inställning för ljust eller mörkt läge. Har du hittat ett problem? Skapa ett ärende (issue) i projektets kodförråd.",
+      "MuutoKaveri är byggd för att uppfylla WCAG 2.1 på nivå AA: den fungerar med tangentbord och skärmläsare, färgerna uppfyller kontrastkraven och den följer din inställning för ljust eller mörkt läge. Har du hittat ett problem? Skapa ett ärende (issue) i projektets kodförråd.",
     sourcesTitle: "Källor",
     sourceItems: [
       { topic: "Flyttares kunskap om försäkringar", label: "Enkät av If, MTV Uutiset", href: "https://www.mtvuutiset.fi/artikkeli/tata-moni-ei-tieda-korvaako-kotivakuutus-muutoissa-sattuvat-vahingot/4737448" },

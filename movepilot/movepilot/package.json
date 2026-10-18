@@ -1,5 +1,5 @@
 {
-  "name": "movepilot",
+  "name": "muutokaveri",
   "version": "0.2.0",
   "private": true,
   "type": "module",
@@ -15,6 +15,7 @@
     "check": "npm run typecheck && npm test && npm run contrast && npm run build && npm run budget"
   },
   "dependencies": {
+    "@fontsource-variable/source-sans-3": "5.3.0",
     "express": "^4.21.2",
     "fast-xml-parser": "^4.5.1"
   },

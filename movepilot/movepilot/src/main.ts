@@ -2,15 +2,14 @@ import "./styles.css";
 import { renderForm } from "./form";
 import { renderLoading, renderPlan, type Filter } from "./plan";
 import { renderSummary } from "./summary";
-import { renderFooter, renderHeader } from "./shell";
+import { renderFooter, renderHeader, updateNav, visibleLangPicker } from "./shell";
+import { createTour } from "./tour";
 import { buildPlan } from "./rules";
 import { buildIcs, downloadFile } from "./ics";
 import { currentLang, detectLang, locale, setLang, t } from "./i18n";
 import { emptyNotes, enableOffline, forget, loadSaved, save } from "./storage";
 import { todayIso } from "./util";
-import type { Card, Forecast, HomeNotes, Lang, MoveInput } from "./types";
-
-type Screen = "form" | "loading" | "plan" | "summary";
+import type { Card, Forecast, HomeNotes, Lang, MoveInput, Screen } from "./types";
 
 const state = {
   screen: "form" as Screen,
@@ -21,6 +20,8 @@ const state = {
   notes: emptyNotes(),
   filter: "all" as Filter,
   remember: false,
+  // The tour invitation is shown until it is used or dismissed. Remembered only when saving is on.
+  tourSeen: false,
 };
 
 // Each forecast request gets a number; a slower, older response is ignored.
@@ -38,21 +39,58 @@ function announce(text: string): void {
   requestAnimationFrame(() => (live.textContent = text));
 }
 
+const tour = createTour({
+  screen: () => state.screen,
+  goTo: (screen) => {
+    // Re-showing the form (to start the tour) keeps what the user has typed so far.
+    const draft = screen === "form" && state.screen === "form" ? snapshotForm() : [];
+    go(screen);
+    restoreForm(draft);
+  },
+  submit: () => {
+    const form = root.querySelector<HTMLFormElement>("#move-form");
+    form?.requestSubmit();
+    return state.screen === "loading"; // the submit handler starts loading only when the answers are valid
+  },
+  onEnd: markTourSeen,
+});
+
+function markTourSeen(): void {
+  state.tourSeen = true;
+  persist();
+}
+
 function go(screen: Screen): void {
   state.screen = screen;
   render();
+  // During the tour, the tour scrolls to its step and moves focus to its dialog instead.
+  if (tour.active()) return;
   window.scrollTo({ top: 0 });
   // Move focus to the new heading so screen-reader and keyboard users hear the screen change.
   root.querySelector<HTMLElement>("h1")?.focus();
 }
 
 function render(): void {
+  draw();
+  updateNav(header, state.screen, state.cards.length > 0);
+  tour.sync();
+}
+
+function draw(): void {
   if (state.screen === "loading" && state.input) {
     renderLoading(root, state.input.city);
     return;
   }
   if (state.screen === "form" || !state.input) {
-    renderForm(root, state.input, submit);
+    renderForm(root, state.input, submit, {
+      tourBanner: !state.tourSeen && !tour.active(),
+      onStartTour: () => tour.start(),
+      onDismissTour: () => {
+        markTourSeen();
+        render();
+        root.querySelector<HTMLElement>("h1")?.focus();
+      },
+    });
     return;
   }
   if (state.screen === "plan") {
@@ -87,7 +125,17 @@ function render(): void {
 }
 
 function renderShell(): void {
-  renderHeader(header, changeLang);
+  renderHeader(header, {
+    onLang: changeLang,
+    onNav: (screen) => {
+      // Ignored while a plan is loading (its result would pull the user back), and for the current tool.
+      if (state.screen === "loading" || screen === state.screen) return;
+      if (screen === "form" || state.cards.length) go(screen);
+    },
+    onTour: () => {
+      if (state.screen !== "loading") tour.start();
+    },
+  });
   renderFooter(footer);
 }
 
@@ -97,7 +145,7 @@ function rebuild(): void {
 
 function persist(): void {
   if (!state.remember || !state.input) return;
-  save({ input: state.input, done: [...state.done], notes: state.notes, lang: currentLang() });
+  save({ input: state.input, done: [...state.done], notes: state.notes, lang: currentLang(), tourSeen: state.tourSeen });
 }
 
 /** Fetches the forecast for the current answers and shows the plan, unless a newer request took over. */
@@ -155,7 +203,7 @@ function exportCalendar(): void {
   if (!open.length) return; // the button is disabled then; a calendar file must have at least one event
   const ics = buildIcs(open, t().plan.calendarName(state.input.city));
   const slug = state.input.city.toLowerCase().replace(/[^\p{L}]+/gu, "-");
-  downloadFile(`movepilot-${slug}.ics`, ics, "text/calendar;charset=utf-8");
+  downloadFile(`muutokaveri-${slug}.ics`, ics, "text/calendar;charset=utf-8");
   announce(t().plan.calendarDone);
 }
 
@@ -221,7 +269,7 @@ async function changeLang(next: Lang): Promise<void> {
     if (!(await setLang(next))) return; // a later choice replaced this one
   } catch {
     // The language file couldn't load (offline): keep the current language and say so in the picker.
-    header.querySelector<HTMLSelectElement>("#lang")!.value = currentLang();
+    header.querySelectorAll<HTMLSelectElement>("select[data-lang]").forEach((s) => (s.value = currentLang()));
     return;
   }
   rebuild();
@@ -229,7 +277,7 @@ async function changeLang(next: Lang): Promise<void> {
   render();
   restoreForm(draft);
   persist();
-  header.querySelector<HTMLSelectElement>("#lang")?.focus();
+  visibleLangPicker(header)?.focus();
 }
 
 async function getForecast(city: string): Promise<Forecast | null> {
@@ -260,6 +308,7 @@ async function start(): Promise<void> {
     return;
   }
   state.remember = true;
+  state.tourSeen = saved.tourSeen;
   state.done = new Set(saved.done);
   state.notes = saved.notes;
   void enableOffline();

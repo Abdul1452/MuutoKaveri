@@ -9,7 +9,7 @@ const years = (n: number) => (n === 1 ? "1 vuosi" : `${n} vuotta`);
 const tasks = (n: number) => (n === 1 ? "1 tehtävä" : `${n} tehtävää`);
 
 export const fi: Messages = {
-  htmlTitle: "MovePilot – suunnittele muuttosi",
+  htmlTitle: "MuutoKaveri – suunnittele muuttosi",
   metaDescription:
     "Muuttokaveri, joka laatii muuttopäiväsi perusteella henkilökohtaisen suunnitelman muuttoon ja ensimmäisiin 30 päivään.",
 
@@ -17,6 +17,11 @@ export const fi: Messages = {
     skip: "Siirry sisältöön",
     tagline: "Muuttokaverisi",
     language: "Kieli",
+    mainNav: "Työkalut",
+    menu: "Valikko",
+    tour: "Esittely",
+    insurance: "Päivitä vakuutus",
+    navLocked: "Tee ensin suunnitelma",
   },
 
   steps: {
@@ -66,6 +71,119 @@ export const fi: Messages = {
       { title: "Vihreämpi muutto", body: "Vähemmän laatikoita ja ajoja, vähemmän jätettä ja pienempi lämmitysenergian kulutus uudessa kodissa." },
       { title: "Yksityisyys etusijalla", body: "Ei käyttäjätiliä eikä seurantaa. Toimii suomeksi, ruotsiksi ja englanniksi." },
     ],
+    badgeValue: "2 min",
+    badgeLabel: "ja muuttosuunnitelmasi on valmis",
+    visualPoints: [
+      "Vuoto-, pakkas- ja vakuutustarkistukset",
+      "Jokaiselle tehtävälle oma päivämäärä",
+      "Toimii muuttopäivänä ilman verkkoyhteyttä",
+    ],
+    whyEyebrow: "Miksi MuutoKaveri",
+    whyTitle: "Kaikki muuttoon liittyvä yhdessä suunnitelmassa",
+    faqTitle: "Usein kysyttyä",
+    faq: [
+      {
+        q: "Onko MuutoKaveri maksuton, ja tarvitsenko käyttäjätilin?",
+        a: "MuutoKaveri on maksuton, eikä käyttäjätiliä tarvita. Vastaa kuuteen kysymykseen, niin suunnitelmasi on valmis.",
+      },
+      {
+        q: "Mitä vastauksilleni tapahtuu?",
+        a: "Ne pysyvät tällä selaimen välilehdellä. Palvelimellemme lähetetään vain kunnan nimi sääennusteen hakemista varten. Jos otat käyttöön asetuksen ”Tallenna tähän laitteeseen”, suunnitelma säilyy laitteessasi, kunnes poistat asetuksen käytöstä.",
+      },
+      {
+        q: "Käykö suunnitelma vakuutusehtojen sijasta?",
+        a: "Ei käy. Suunnitelma antaa yleisiä neuvoja, mutta oman vakuutuksesi ehdot ratkaisevat, mitä korvataan. Siksi suunnitelma kertoo, mitä kannattaa tarkistaa, ja siinä on linkki vakuutusyhtiösi muuttoilmoitukseen.",
+      },
+      {
+        q: "Voinko käyttää sitä puhelimella muuttopäivänä?",
+        a: "Voit. Ota käyttöön asetus ”Tallenna tähän laitteeseen”, niin suunnitelma aukeaa, vaikka uudessa kodissa ei olisi vielä internetyhteyttä. Voit myös tulostaa suunnitelman tai lisätä tehtävät kalenteriisi.",
+      },
+    ],
+  },
+
+  tour: {
+    bannerTitle: "Käytätkö MuutoKaveria ensimmäistä kertaa?",
+    bannerBody: "Tutustu työkaluihin minuutin esittelykierroksella: vastauksista valmiiseen suunnitelmaan.",
+    bannerStart: "Aloita esittely",
+    bannerDismiss: "Ei kiitos",
+    label: "Esittelykierros",
+    stepOf: (n: number, total: number) => `Vaihe ${n}/${total}`,
+    back: "Takaisin",
+    next: "Seuraava",
+    skip: "Ohita esittely",
+    finish: "Valmis",
+    buildPlan: "Tee suunnitelma",
+    openSummary: "Avaa yhteenveto",
+    steps: {
+      welcome: {
+        title: "Tervetuloa MuutoKaveriin",
+        body: "Tämä esittelykierros näyttää jokaisen työkalun vastauksistasi valmiiseen suunnitelmaan. Se kestää noin minuutin. Voit lopettaa milloin tahansa painamalla Esc-näppäintä.",
+      },
+      language: {
+        title: "Valitse kieli",
+        body: "Voit vaihtaa kieleksi suomen, ruotsin tai englannin milloin tahansa. Vastauksesi säilyvät ennallaan.",
+      },
+      nav: {
+        title: "Siirry työkalusta toiseen",
+        body: "Työkalut ovat Muuttosi, Suunnitelmasi ja Valmis. Suunnitelma ja yhteenveto avautuvat, kun olet tehnyt suunnitelman.",
+      },
+      form: {
+        title: "Kerro muutostasi",
+        body: "Kuusi nopeaa vastausta: muuttopäivä, kunta, talotyyppi, rakennuksen valmistumisvuosi, kodinkoneesi ja vakuutuksesi.",
+      },
+      submit: {
+        title: "Tee suunnitelma",
+        body: "Kun jatkat, suunnitelma tehdään lomakkeen vastausten perusteella. Voit muuttaa vastauksia myöhemmin.",
+      },
+      progress: {
+        title: "Seuraa etenemistä",
+        body: "Näet, montako tehtävää on tehty, montako tärkeää tehtävää on vielä tekemättä ja montako päivää muuttoon on jäljellä.",
+      },
+      forecast: {
+        title: "Sää muuton aikaan",
+        body: "Sääennuste muuttoa edeltäville ja sitä seuraaville päiville. Jos ennusteessa on pakkasta, kovaa tuulta tai rankkasadetta, suunnitelmaan lisätään tehtävä.",
+      },
+      filters: {
+        title: "Suodata aiheen mukaan",
+        body: "Näytä vain vuotoriskeihin, vakuutukseen, säähän, kestävyyteen, asiointiin tai turvallisuuteen liittyvät tehtävät.",
+      },
+      card: {
+        title: "Merkitse tehtävät tehdyiksi",
+        body: "Jokaisella tehtävällä on päivämäärä. Merkitse tehtävä, kun se on tehty. Tärkeissä tehtävissä on violetti reuna. Linkeistä pääset palveluun ja kunkin tiedon lähteeseen.",
+      },
+      tools: {
+        title: "Kalenteri ja tulostus",
+        body: "Lisää tekemättömät tehtävät puhelimesi kalenteriin tai tulosta suunnitelma muistilistaksi muuttopäivää varten.",
+      },
+      remember: {
+        title: "Tallenna tähän laitteeseen",
+        body: "Asetus on oletuksena pois päältä. Ota se käyttöön, niin suunnitelmasi säilyy ja voit käyttää sitä muuttopäivänä ilman verkkoyhteyttä. Kun poistat asetuksen käytöstä, kaikki tiedot poistetaan.",
+      },
+      next: {
+        title: "Siirry yhteenvetoon",
+        body: "Kun suunnitelma näyttää hyvältä, siirry yhteenvetoon. Siinä näet, mitä on vielä tekemättä, ja viimeiset vaiheet.",
+      },
+      open: {
+        title: "Mitä on vielä tekemättä",
+        body: "Tärkeät tehtävät, joita et ole vielä merkinnyt tehdyiksi. Näin mikään iso asia ei unohdu.",
+      },
+      cta: {
+        title: "Päivitä kotivakuutuksesi",
+        body: "Linkki vie vakuutusyhtiösi muuttoilmoitukseen, jotta uusi koti on vakuutettu ensimmäisestä yöstä alkaen.",
+      },
+      notes: {
+        title: "Uuden kodin tärkeät tiedot",
+        body: "Kirjoita muistiin veden pääsulkuventtiilin ja sähkökeskuksen sijainti, huoltoyhtiön puhelinnumero ja mittarien lukemat.",
+      },
+      emergency: {
+        title: "Jos vettä vuotaa",
+        body: "Neljä toimenpidettä, jotka teet heti. Ne ovat myös tulosteessa.",
+      },
+      done: {
+        title: "Olet valmis",
+        body: "Siinä olivat kaikki työkalut. Voit katsoa esittelyn uudelleen sivun yläreunan Esittely-painikkeesta.",
+      },
+    },
   },
 
   loading: {
@@ -196,12 +314,12 @@ export const fi: Messages = {
     summary: "Tietosuoja, saavutettavuus ja lähteet",
     privacyTitle: "Tietosuoja",
     privacy:
-      "MovePilotissa ei ole käyttäjätilejä, evästeitä, analytiikkaa eikä seurantaa. Oletuksena vastauksesi pysyvät tällä selaimen välilehdellä ja katoavat, kun suljet sen. Palvelimellemme lähetetään vain kunnan nimi. Palvelin välittää sen Ilmatieteen laitokselle sääennusteen hakemista varten ja pitää kunnan ennustetta muistissa 30 minuuttia. Nimeä ei kirjata lokiin eikä yhdistetä sinuun.",
+      "MuutoKaverissa ei ole käyttäjätilejä, evästeitä, analytiikkaa eikä seurantaa. Oletuksena vastauksesi pysyvät tällä selaimen välilehdellä ja katoavat, kun suljet sen. Palvelimellemme lähetetään vain kunnan nimi. Palvelin välittää sen Ilmatieteen laitokselle sääennusteen hakemista varten ja pitää kunnan ennustetta muistissa 30 minuuttia. Nimeä ei kirjata lokiin eikä yhdistetä sinuun.",
     privacySaved:
       "Jos otat käyttöön asetuksen ”Tallenna tähän laitteeseen”, vastauksesi, merkintäsi ja muistiinpanosi säilytetään selaimen paikallisessa tallennustilassa, ja sovellus tallennetaan välimuistiin, jotta se toimii ilman verkkoyhteyttä. Mitään ei lähetetä minnekään. Kun poistat asetuksen käytöstä, kaikki nämä tiedot poistetaan.",
     accessibilityTitle: "Saavutettavuus",
     accessibility:
-      "MovePilot on suunniteltu täyttämään WCAG 2.1 -ohjeiston AA-tason vaatimukset. Sitä voi käyttää näppäimistöllä ja ruudunlukijalla, värit täyttävät kontrastivaatimukset ja sovellus noudattaa vaalean tai tumman tilan asetustasi. Löysitkö ongelman? Kerro siitä avaamalla issue projektin repositoriossa.",
+      "MuutoKaveri on suunniteltu täyttämään WCAG 2.1 -ohjeiston AA-tason vaatimukset. Sitä voi käyttää näppäimistöllä ja ruudunlukijalla, värit täyttävät kontrastivaatimukset ja sovellus noudattaa vaalean tai tumman tilan asetustasi. Löysitkö ongelman? Kerro siitä avaamalla issue projektin repositoriossa.",
     sourcesTitle: "Lähteet",
     sourceItems: [
       { topic: "Muuttajien tietämys vakuutusturvasta", label: "If-kysely, MTV Uutiset", href: "https://www.mtvuutiset.fi/artikkeli/tata-moni-ei-tieda-korvaako-kotivakuutus-muutoissa-sattuvat-vahingot/4737448" },

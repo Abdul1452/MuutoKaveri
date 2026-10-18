@@ -22,7 +22,7 @@ test("all-day event on the due date with a reminder", () => {
   assert.ok(lines.includes("DTEND;VALUE=DATE:20261101"));
   assert.ok(lines.includes("DTSTAMP:20261018T093000Z"));
   assert.ok(lines.includes("TRIGGER:PT9H"));
-  assert.ok(lines.includes("UID:water-valve@movepilot"));
+  assert.ok(lines.includes("UID:water-valve@muutokaveri"));
 });
 
 test("text values are escaped", () => {
