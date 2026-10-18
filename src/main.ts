@@ -2,12 +2,13 @@ import "./styles.css";
 import { renderForm } from "./form";
 import { renderLoading, renderPlan, type Filter } from "./plan";
 import { renderSummary } from "./summary";
-import { renderFooter, renderHeader, updateNav, visibleLangPicker } from "./shell";
+import { renderFooter, renderHeader, updateNav, updateThemeSwitch, visibleLangPicker } from "./shell";
 import { createTour } from "./tour";
 import { buildPlan } from "./rules";
 import { buildIcs, downloadFile } from "./ics";
 import { currentLang, detectLang, locale, setLang, t } from "./i18n";
 import { emptyNotes, enableOffline, forget, loadSaved, save } from "./storage";
+import { chosenTheme, currentTheme, onSystemThemeChange, setTheme } from "./theme";
 import { todayIso } from "./util";
 import type { Card, Forecast, HomeNotes, Lang, MoveInput, Screen } from "./types";
 
@@ -135,8 +136,16 @@ function renderShell(): void {
     onTour: () => {
       if (state.screen !== "loading") tour.start();
     },
+    onTheme: toggleTheme,
   });
+  updateThemeSwitch(header, currentTheme() === "dark");
   renderFooter(footer);
+}
+
+function toggleTheme(): void {
+  setTheme(currentTheme() === "dark" ? "light" : "dark");
+  updateThemeSwitch(header, currentTheme() === "dark");
+  persist();
 }
 
 function rebuild(): void {
@@ -145,7 +154,14 @@ function rebuild(): void {
 
 function persist(): void {
   if (!state.remember || !state.input) return;
-  save({ input: state.input, done: [...state.done], notes: state.notes, lang: currentLang(), tourSeen: state.tourSeen });
+  save({
+    input: state.input,
+    done: [...state.done],
+    notes: state.notes,
+    lang: currentLang(),
+    theme: chosenTheme(),
+    tourSeen: state.tourSeen,
+  });
 }
 
 /** Fetches the forecast for the current answers and shows the plan, unless a newer request took over. */
@@ -294,6 +310,9 @@ async function getForecast(city: string): Promise<Forecast | null> {
 async function start(): Promise<void> {
   window.addEventListener("beforeprint", showAllForPrint);
   const saved = loadSaved();
+  if (saved?.theme) setTheme(saved.theme);
+  // While no mode is chosen, the switch follows the system setting as it changes (e.g. at sunset).
+  onSystemThemeChange(() => updateThemeSwitch(header, currentTheme() === "dark"));
   try {
     await setLang(saved?.lang ?? detectLang());
   } catch {

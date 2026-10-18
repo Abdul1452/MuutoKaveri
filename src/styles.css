@@ -64,8 +64,40 @@
   --font: "Source Sans 3", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
+/* Dark mode: from the system setting, or from the header switch (data-theme on <html>). Screen only, so a
+   printout is always dark text on white paper. scripts/contrast.mjs checks that the two blocks stay identical. */
+@media screen and (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --violet-hover: #8a4fff;    /* white text: 4.5:1 */
+    --violet-deep: #3b0fa0;
+    --violet-text: #b79dff;     /* 7.7:1 on surface */
+    --violet-soft: #2a2045;     /* violet text on it: 6.7:1 */
+    --violet-line: #4a3a7a;
+
+    --mist: #0f0e15;
+    --mist-2: #15131d;
+    --mist-3: #1b1926;
+    --surface: #1a1824;
+    --surface-2: #221f2e;
+    --ink: #f1eff7;             /* 15.6:1 on surface */
+    --muted: #aeaabd;           /* 7.7:1 on surface */
+    --line: #2e2a3d;
+    --control: #8a85a0;         /* 4.95:1 on surface */
+    --track: #3a3550;
+    --fill: #b79dff;            /* 5.2:1 against the track */
+
+    --risk: #ff9c8f;  --risk-soft: #3a1d1f;
+    --green: #6ce0a6; --green-soft: #12301f;
+    --blue: #9cc0ff;  --blue-soft: #172544;
+    --amber: #ffb27a; --amber-soft: #36230f;
+    --slate: #c3c9d6; --slate-soft: #262a35;
+
+    --focus: #b79dff;
+  }
+}
+@media screen {
+  :root[data-theme="dark"] {
     color-scheme: dark;
     --violet-hover: #8a4fff;    /* white text: 4.5:1 */
     --violet-deep: #3b0fa0;
@@ -173,6 +205,13 @@ h1:focus, h2:focus, main:focus { outline: none; }
 }
 .lang-picker select:hover { background-color: var(--mist-2); }
 .lang-picker select option { background: var(--surface); color: var(--ink); }
+.prefs { display: flex; align-items: stretch; height: 100%; }
+.theme-switch .switch-track { margin-left: 4px; }
+.theme-switch[aria-checked="true"] .switch-track { background: var(--violet); border-color: var(--violet); }
+.theme-switch[aria-checked="true"] .switch-track::after { left: 23px; background: #fff; }
+/* The moon fills in while dark mode is on, so the state shows without the track too (phone bar). */
+.theme-switch[aria-checked="true"] .icon path { fill: currentColor; }
+.icon-label.theme-switch[aria-checked="true"] { background: var(--violet-soft); color: var(--violet-text); }
 .utility-cta {
   display: inline-flex; align-items: center; gap: 8px; padding: 0 28px;
   background: var(--violet); color: var(--on-violet); text-decoration: none; font-weight: 600;
@@ -635,8 +674,12 @@ progress::-moz-progress-bar { background: var(--fill); border-radius: 999px; }
    States shown only with background colour would vanish, so give them system colours or borders. */
 @media (forced-colors: active) {
   .switch-track::after { background: CanvasText; }
-  .switch input:checked + .switch-track { forced-color-adjust: none; background: Highlight; border-color: Highlight; }
-  .switch input:checked + .switch-track::after { forced-color-adjust: none; background: HighlightText; }
+  .switch input:checked + .switch-track, .theme-switch[aria-checked="true"] .switch-track {
+    forced-color-adjust: none; background: Highlight; border-color: Highlight;
+  }
+  .switch input:checked + .switch-track::after, .theme-switch[aria-checked="true"] .switch-track::after {
+    forced-color-adjust: none; background: HighlightText;
+  }
   .filter[aria-pressed="true"], .step-current .step-dot, .badge {
     forced-color-adjust: none; background: Highlight; color: HighlightText; border-color: Highlight;
   }

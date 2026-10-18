@@ -14,6 +14,8 @@ export const sv: Messages = {
     menu: "Meny",
     tour: "Rundtur",
     insurance: "Uppdatera försäkringen",
+    darkMode: "Mörkt läge",
+    darkShort: "Mörkt",
     navLocked: "Skapa din plan först",
   },
 
@@ -109,8 +111,8 @@ export const sv: Messages = {
         body: "Rundturen visar alla verktyg, från dina svar till den färdiga planen. Den tar ungefär en minut. Du kan avsluta när som helst med Esc.",
       },
       language: {
-        title: "Välj språk",
-        body: "Byt mellan engelska, finska och svenska när du vill. Dina svar finns kvar som de är.",
+        title: "Välj språk och utseende",
+        body: "Byt mellan engelska, finska och svenska när du vill, och mellan ljust och mörkt läge. Dina svar finns kvar som de är.",
       },
       nav: {
         title: "Gå mellan verktygen",

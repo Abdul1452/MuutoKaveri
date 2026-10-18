@@ -1,7 +1,8 @@
 // "Save on this device" is opt-in. Until the user turns it on, nothing is written to the device:
 // no local storage and no offline cache, so no consent banner is needed (Finnish Act 917/2014, s. 205).
-import type { HomeNotes, Lang, MoveInput } from "./types";
+import type { HomeNotes, Lang, MoveInput, Theme } from "./types";
 import { isLang } from "./i18n";
+import { isTheme } from "./theme";
 import { isMoveInput } from "./validate";
 
 const KEY = "muutokaveri:v1";
@@ -15,6 +16,8 @@ export interface Saved {
   done: string[];
   notes: HomeNotes;
   lang: Lang;
+  /** Light or dark mode chosen with the header switch; null follows the system setting. */
+  theme: Theme | null;
   tourSeen: boolean;
 }
 
@@ -41,6 +44,7 @@ export function loadSaved(): Saved | null {
       done: Array.isArray(data.done) ? data.done.filter((id: unknown) => typeof id === "string") : [],
       notes: cleanNotes(data.notes),
       lang: isLang(data.lang) ? data.lang : "en",
+      theme: isTheme(data.theme) ? data.theme : null,
       tourSeen: data.tourSeen === true,
     };
   } catch {

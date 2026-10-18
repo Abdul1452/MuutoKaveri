@@ -21,6 +21,8 @@ export const fi: Messages = {
     menu: "Valikko",
     tour: "Esittely",
     insurance: "Päivitä vakuutus",
+    darkMode: "Tumma tila",
+    darkShort: "Tumma",
     navLocked: "Tee ensin suunnitelma",
   },
 
@@ -120,8 +122,8 @@ export const fi: Messages = {
         body: "Tämä esittelykierros käy läpi kaikki työkalut aina vastauksistasi valmiiseen suunnitelmaan. Se kestää noin minuutin. Voit lopettaa milloin tahansa painamalla Esc-näppäintä.",
       },
       language: {
-        title: "Valitse kieli",
-        body: "Voit vaihtaa kieleksi suomen, ruotsin tai englannin milloin tahansa. Vastauksesi säilyvät ennallaan.",
+        title: "Valitse kieli ja ulkoasu",
+        body: "Voit vaihtaa kieleksi suomen, ruotsin tai englannin milloin tahansa ja valita vaalean tai tumman tilan. Vastauksesi säilyvät ennallaan.",
       },
       nav: {
         title: "Siirry työkalusta toiseen",

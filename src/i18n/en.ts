@@ -19,6 +19,8 @@ export const en = {
     menu: "Menu",
     tour: "Tour",
     insurance: "Update insurance",
+    darkMode: "Dark mode",
+    darkShort: "Dark",
     navLocked: "Build your plan first",
   },
 
@@ -114,8 +116,8 @@ export const en = {
         body: "This tour shows each tool, from your answers to the finished plan. It takes about a minute. Press Esc to leave at any time.",
       },
       language: {
-        title: "Choose your language",
-        body: "Switch between English, Finnish and Swedish whenever you like. Your answers stay as they are.",
+        title: "Choose your language and look",
+        body: "Switch between English, Finnish and Swedish whenever you like, and between light and dark mode. Your answers stay as they are.",
       },
       nav: {
         title: "Move between the tools",

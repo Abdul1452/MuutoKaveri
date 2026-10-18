@@ -22,6 +22,7 @@ export interface HeaderActions {
   onLang: (lang: Lang) => void;
   onNav: (screen: Exclude<Screen, "loading">) => void;
   onTour: () => void;
+  onTheme: () => void;
 }
 
 // Two-tier header, as on large Finnish insurance sites: a utility bar (tagline, tour, language, insurance)
@@ -42,10 +43,15 @@ export function renderHeader(el: HTMLElement, actions: HeaderActions): void {
         <span class="utility-tagline">${esc(s.tagline)}</span>
         <div class="utility-actions">
           <button type="button" class="utility-btn" data-tour-start>${icon("help", "icon icon-sm")} ${esc(s.tour)}</button>
-          <div class="lang-picker">
-            <label for="lang" class="sr-only">${esc(s.language)}</label>
-            ${icon("globe", "icon icon-sm lang-icon")}
-            <select id="lang" data-lang>${options}</select>
+          <div class="prefs" id="prefs">
+            <div class="lang-picker">
+              <label for="lang" class="sr-only">${esc(s.language)}</label>
+              ${icon("globe", "icon icon-sm lang-icon")}
+              <select id="lang" data-lang>${options}</select>
+            </div>
+            <button type="button" class="utility-btn theme-switch" role="switch" aria-checked="false" data-theme-switch>
+              ${icon("moon", "icon icon-sm")} ${esc(s.darkMode)}<span class="switch-track" aria-hidden="true"></span>
+            </button>
           </div>
           <a class="utility-cta" href="${IF_MOVE_NOTICE}" target="_blank" rel="noopener">${icon("shield", "icon icon-sm")} ${esc(s.insurance)}${newTab}</a>
         </div>
@@ -71,11 +77,16 @@ export function renderHeader(el: HTMLElement, actions: HeaderActions): void {
           <a class="mobile-only menu-cta" href="${IF_MOVE_NOTICE}" target="_blank" rel="noopener">${icon("shield", "icon icon-sm")} ${esc(s.insurance)}${newTab}${icon("external", "icon icon-xs")}</a>
         </nav>
         <div class="mobile-actions">
-          <div class="icon-label lang-compact">
-            ${icon("globe")}
-            <span aria-hidden="true">${short}</span>
-            <label for="lang-m" class="sr-only">${esc(s.language)} ${short}</label>
-            <select id="lang-m" data-lang>${options}</select>
+          <div class="prefs" id="prefs-m">
+            <div class="icon-label lang-compact">
+              ${icon("globe")}
+              <span aria-hidden="true">${short}</span>
+              <label for="lang-m" class="sr-only">${esc(s.language)} ${short}</label>
+              <select id="lang-m" data-lang>${options}</select>
+            </div>
+            <button type="button" class="icon-label theme-switch" role="switch" aria-checked="false" aria-label="${esc(s.darkMode)}" data-theme-switch>
+              ${icon("moon")}<span>${esc(s.darkShort)}</span>
+            </button>
           </div>
           <button type="button" class="icon-label" data-tour-start>${icon("help")}<span>${esc(s.tour)}</span></button>
           <button type="button" class="icon-label" id="menu-btn" aria-expanded="false" aria-controls="mainnav">
@@ -91,6 +102,7 @@ export function renderHeader(el: HTMLElement, actions: HeaderActions): void {
     }),
   );
   el.querySelectorAll<HTMLButtonElement>("[data-tour-start]").forEach((b) => b.addEventListener("click", actions.onTour));
+  el.querySelectorAll<HTMLButtonElement>("[data-theme-switch]").forEach((b) => b.addEventListener("click", actions.onTheme));
 
   const menuBtn = el.querySelector<HTMLButtonElement>("#menu-btn")!;
   menuBtn.addEventListener("click", () => setMenu(el, menuBtn.getAttribute("aria-expanded") !== "true"));
@@ -137,6 +149,11 @@ export function updateNav(el: HTMLElement, screen: Screen, hasPlan: boolean): vo
     if (target === current) b.setAttribute("aria-current", "page");
     else b.removeAttribute("aria-current");
   });
+}
+
+/** Shows on both theme switches whether dark mode is on. */
+export function updateThemeSwitch(el: HTMLElement, dark: boolean): void {
+  el.querySelectorAll("[data-theme-switch]").forEach((b) => b.setAttribute("aria-checked", String(dark)));
 }
 
 /** The visible language picker (desktop or phone layout). */

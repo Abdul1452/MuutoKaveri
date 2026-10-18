@@ -20,7 +20,7 @@ interface Step {
 
 const STEPS: Step[] = [
   { key: "welcome", screen: "form" },
-  { key: "language", screen: "form", targets: ["#lang", "#lang-m"] },
+  { key: "language", screen: "form", targets: ["#prefs", "#prefs-m"] },
   { key: "nav", screen: "form", targets: ["#mainnav ul", "#menu-btn"] },
   { key: "form", screen: "form", targets: ["#move-form"] },
   { key: "submit", screen: "form", targets: ["#move-form button[type=submit]"], action: "submit" },
