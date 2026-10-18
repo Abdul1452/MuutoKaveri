@@ -1,5 +1,6 @@
-import type { MoveInput } from "./types";
-import { isIsoDate } from "./util";
+// The Vercel function (api/forecast.ts) also loads this file as plain ESM, so its imports carry .js extensions.
+import type { MoveInput } from "./types.js";
+import { isIsoDate } from "./util.js";
 
 // Letters (incl. å, ä, ö), spaces and hyphens only; the server checks the same pattern.
 export const CITY_PATTERN = /^[\p{L} -]{2,40}$/u;
